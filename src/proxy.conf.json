@@ -1,0 +1,11 @@
+{
+    "/api2/*": {
+        "target": "https://api.sl.se",
+        "secure": false
+    },
+    "/v2.0/forecast/*": {
+        "target": "https://api.weatherbit.io",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

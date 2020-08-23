@@ -63,7 +63,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "my-sl-weather-frontend:build"
+            "browserTarget": "my-sl-weather-frontend:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -120,6 +121,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "my-sl-weather-frontend"
 }

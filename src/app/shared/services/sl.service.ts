@@ -1,0 +1,18 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { SLApiResponse } from '../models/sl-api-response.model';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class SLService {
+    constructor(
+        private httpClient: HttpClient
+    ) {
+    }
+
+    public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
+        return this.httpClient.get<SLApiResponse>(`/api2/realtimedeparturesV4.json?key=${environment.slApiKey}&siteid=${siteId}`);
+    }
+
+}
