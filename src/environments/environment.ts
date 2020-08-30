@@ -6,10 +6,10 @@ export const environment = {
   production: false,
   localSLApiUrl: "http://localhost:4201/api/sl/realtimedeparturesV4.json",
   slApiUrl: "https://api.sl.se/api2/realtimedeparturesV4.json",
-  slApiKey: "ec06ce9204ba4558b5f1846a408d8e7d",
-  localWeatherApiUrl: "/v2.0/forecast/",
+  slApiKey: "<sl-api-key>",
+  localWeatherApiUrl: "/v2.0/forecast/hourly",
   weatherApiUrl: "https://api.weatherbit.io/v2.0/forecast/hourly",
-  weatherApiKey: "cfe142e62d9f49088214471390588061"
+  weatherApiKey: "<Weather-api-key>"
 };
 
 /*

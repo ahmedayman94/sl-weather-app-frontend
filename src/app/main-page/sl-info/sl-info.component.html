@@ -1,8 +1,49 @@
-<h2>{{this.now}}</h2>
-<h1>Transportation</h1>
-<h2>Bus 54 </h2>
-<div [innerHTML]=busTimes?.boardTime>
-</div>
-<h2>Gärdet Line 13 </h2>
-<div [innerHTML]=metroTimes?.boardTime>
+<div class="container">
+    <div class="container-error">
+        {{this.errorMessage}}
+    </div>
+    <div class="container-header">
+        <div>
+            {{this.date}}
+        </div>
+        <div id="clock-now">
+            {{this.now}}
+        </div>
+    </div>
+    <div class="container-schedule">
+        <div class="schedule">
+            <div class="title">
+                Bus 54 <p style="font-size: 50%;">(Latest update: {{busTimes?.latestUpdate}})</p>
+            </div>
+            <div>
+                <div class="board-times" [innerHTML]=busTimes?.boardTime>
+                </div>
+            </div>
+        </div>
+        <div class="schedule">
+            <div class="title">
+                Gärdet Line 13 <p>(Latest update: {{metroTimes?.latestUpdate}})</p>
+            </div>
+            <div>
+                <div class="board-times" [innerHTML]=metroTimes?.boardTime>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-weather">
+        <div id="weather-list">
+            <div class="weather-list-item" *ngFor="let w of weatherInfo">
+                <div>
+                    {{w.time}}
+                </div>
+                <div>
+                    <img style="width: 50px; height: 50px" [src]="getImageByCode(w.icon)" alt="">
+                </div>
+                <div>
+                    {{w.temperature}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

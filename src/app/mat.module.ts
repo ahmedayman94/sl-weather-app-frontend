@@ -6,6 +6,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatListModule } from '@angular/material/list';
 
 // import {
 //     MatCheckboxModule,
@@ -48,7 +49,8 @@ import { NgModule } from '@angular/core';
         MatAutocompleteModule,
         MatButtonModule,
         MatButtonToggleModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatListModule
     ]
 })
 export class MaterialModule { }

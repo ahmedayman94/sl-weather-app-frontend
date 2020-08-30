@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SLService } from 'src/app/shared/services/sl.service';
 import { SLApiResponse } from 'src/app/shared/models/sl-api-response.model';
 import { SLTransportationMethod } from 'src/app/shared/models/sl-transportation-method.model';
-import { interval, timer, merge } from 'rxjs';
-import { switchMap, retry } from 'rxjs/operators';
+import { timer, merge, Observable, Subscription } from 'rxjs';
+import { switchMap, retryWhen, tap, mergeMap, map, retry } from 'rxjs/operators';
 import { WeatherService } from 'src/app/shared/services/weather.service';
 
 enum Stations {
@@ -11,74 +11,177 @@ enum Stations {
   GARDET_TUNNEL_BANA = 9221
 };
 
+enum Application {
+  SL,
+  WEATHERBIT
+}
+
 @Component({
   selector: 'app-sl-info',
   templateUrl: './sl-info.component.html',
   styleUrls: ['./sl-info.component.css']
 })
-export class SlInfoComponent implements OnInit {
-  public busTimes: { boardTime: string };
-  public metroTimes: { boardTime: string };
+export class SlInfoComponent implements OnInit, OnDestroy {
+  public busTimes: { boardTime: string, latestUpdate: string };
+  public metroTimes: { boardTime: string, latestUpdate: string };
   public now: string;
+  public date: string;
+  public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
+  public errorMessage: string;
+
+  // private latestUpdateTime: Date;
+  private subscriptions: Subscription[] = [];
+  private dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  private monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  private application = ["SL", "Weatherbit"];
 
   constructor(
     private slService: SLService,
     private weatherService: WeatherService
-  ) {
-    this.busTimes = { boardTime: null };
-  }
+  ) { }
 
   ngOnInit() {
-    timer(0, 30000).pipe(
-      switchMap(() => merge(this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA))),
-      retry(2)
-    )
-      .subscribe(res => {
-        if (res.StatusCode !== 0) {
-          throw new Error("Error has occured. The api has sent the following: " + res.Message);
-        }
-
-        if (res.ResponseData.Metros.length > 0) {
-          this.metroTimes = { boardTime: this.loopThroughNextArrivals(res.ResponseData.Metros) };
-        } else {
-          this.busTimes = { boardTime: this.loopThroughNextArrivals(res.ResponseData.Buses) };
-        }
-      });
-
-    timer(0, 60000).pipe(
-      switchMap(() => this.weatherService.fetchWeather(8))
-    )
-
-    timer(0, 10000)
-      .subscribe(() => this.now = (new Date()).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }));
+    this.subscriptions = [
+      this.getClockSub(),
+      this.getWeatherApiSub(),
+      this.getSlApiSub()];
   }
 
-  private loopThroughNextArrivals(transportationMethod: SLTransportationMethod[]): string {
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  public getImageByCode(code: string): string {
+    return `https://www.weatherbit.io/static/img/icons/${code}.png`;
+  }
+
+  private getClockSub(): Subscription {
+    return timer(0, 10000)
+      .subscribe(() => {
+        const nowDate = new Date();
+        this.date = `${this.dayOfWeek[nowDate.getDay()]}, ${this.monthNames[nowDate.getMonth()]} ${nowDate.getDate()}`;
+        this.now = nowDate.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+        // if (this.latestUpdateTime && (nowDate.getTime() - this.latestUpdateTime.getTime()) > 120000) {
+        //   this.handleError(Application.SL, "Schedule out of sync. Please reload the page");
+        // }
+      });
+  }
+
+  private getSlApiSub(): Subscription {
+    return timer(0, 30000).pipe(
+      switchMap(() => merge(this.fetchNextTableTimes(Stations.TESSIN_PARKEN), this.fetchNextTableTimes(Stations.GARDET_TUNNEL_BANA))),
+      retryWhen(this.retryStrategy())
+    )
+      .subscribe(
+        res => {
+          // this.latestUpdateTime = new Date(res.ResponseData.LatestUpdate);
+          if (res.ResponseData.Metros.length > 0) {
+            this.metroTimes = {
+              boardTime: this.getStrListOfNextArrivals(res.ResponseData.Metros),
+              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
+            };
+          } else {
+            this.busTimes = {
+              boardTime: this.getStrListOfNextArrivals(res.ResponseData.Buses),
+              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
+            };
+          }
+        },
+        err => console.error(err)
+      );
+  }
+
+  private getWeatherApiSub(): Subscription {
+    return timer(0, 3600000).pipe(
+      switchMap(() => this.weatherService.fetchWeather(8)),
+      retry(3),
+      map(res => res.data)
+    ).subscribe(res => {
+      for (let i = 0; i < res.length; i++) {
+        const data = res[i];
+        this.weatherInfo[i] = {
+          time: new Date(data.timestamp_local).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
+          temperature: `${Math.round(data.temp)} °C`,
+          icon: data.weather.icon
+        };
+      }
+    },
+      err => this.handleError(Application.WEATHERBIT, err));
+  }
+
+  private fetchNextTableTimes(stationNumber: number): Observable<SLApiResponse> {
+    return this.slService.fetchNextTransportationTime(stationNumber)
+      .pipe(
+        tap(res => {
+          if (res.StatusCode !== 0) this.handleError(Application.SL, "Error has occured. The api has sent the following: " + res.Message);
+        })
+      );
+  }
+
+  private getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[]): string {
+    function calculateOriginalTableTime(tm: SLTransportationMethod, now: Date): string {
+      if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
+        return '';
+      }
+      const timeDifference = new Date(Date.parse(tm.ExpectedDateTime) - now.getTime()).getMinutes();
+      const regex = new RegExp(/\d+/);
+      const regexResult = regex.exec(tm.DisplayTime);
+      if (regexResult.length > 0 && timeDifference.toString() === regexResult[0]) {
+        return '';
+      }
+
+      return `(Original Table Time: ${timeDifference} min)`;
+    }
+
     let returnStr = "<ul>";
     transportationMethod
       .filter(tm => tm.JourneyDirection === 2)
+      .slice(0, 3) // Only return a maximum of 3 values
       .forEach(tm => {
         const now = new Date();
-        const originalTableTime = Date.parse(tm.ExpectedDateTime) - now.getTime();
-        returnStr += `<li>${tm.DisplayTime} (Original Table Time: ${new Date(originalTableTime).getMinutes()} min) </li>`;
+        const originalTableTime = calculateOriginalTableTime(tm, now);
+        returnStr += `<li>${tm.DisplayTime}  <span style="font-size: 25%">${originalTableTime}</span> </li>`;
       });
     returnStr += "</ul>";
 
     return returnStr;
   }
 
-  // This does not update the html page for some reason..
-  private responseProcessor(res: SLApiResponse): void {
-    if (res.StatusCode !== 0) {
-      throw new Error("Error has occured. The api has sent the following: " + res.Message);
-    }
-    let transportationMethod: SLTransportationMethod[];
-    let lineName: string;
+  private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
+    const maxRetryTimes = 5;
+    const delayTime = 15000;
 
-    if (res.ResponseData.Buses.length > 0) {
-      transportationMethod = res.ResponseData.Buses;
-    } else {
-      transportationMethod = res.ResponseData.Metros;
-    }
+    return (attempts: Observable<any>) => {
+      return attempts.pipe(
+        mergeMap((errors, i) => {
+          const retryAttempt = i + 1;
+          if (retryAttempt > maxRetryTimes) {
+            this.handleError(Application.SL, errors);
+          }
+          console.log(`${errors} \n Retrying..`);
+          return timer(delayTime);
+        })
+      );
+    };
   }
+
+  private handleError(cause: number, errorMessage: string): void {
+    this.errorMessage = `Error occured with the ${this.application[cause]} api. Please reload the page`;
+    throw new Error(errorMessage);
+  }
+
+
+  // // This does not update the html page for some reason..
+  // private responseProcessor(res: SLApiResponse): void {
+  //   if (res.StatusCode !== 0) {
+  //     throw new Error("Error has occured. The api has sent the following: " + res.Message);
+  //   }
+  //   let transportationMethod: SLTransportationMethod[];
+
+  //   if (res.ResponseData.Buses.length > 0) {
+  //     transportationMethod = res.ResponseData.Buses;
+  //   } else {
+  //     transportationMethod = res.ResponseData.Metros;
+  //   }
+  // }
 }

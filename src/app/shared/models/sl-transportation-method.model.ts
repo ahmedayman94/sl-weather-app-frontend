@@ -1,5 +1,5 @@
 export interface SLTransportationMethod {
-    Destintation: string;
+    Destination: string;
 
     DisplayTime: string;
 
