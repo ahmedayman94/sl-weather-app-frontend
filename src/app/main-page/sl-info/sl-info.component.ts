@@ -61,9 +61,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
         const nowDate = new Date();
         this.date = `${this.dayOfWeek[nowDate.getDay()]}, ${this.monthNames[nowDate.getMonth()]} ${nowDate.getDate()}`;
         this.now = nowDate.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
-        // if (this.latestUpdateTime && (nowDate.getTime() - this.latestUpdateTime.getTime()) > 120000) {
-        //   this.handleError(Application.SL, "Schedule out of sync. Please reload the page");
-        // }
       });
   }
 
@@ -113,7 +110,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     return this.slService.fetchNextTransportationTime(stationNumber)
       .pipe(
         tap(res => {
-          if (res.StatusCode !== 0) this.handleError(Application.SL, "Error has occured. The api has sent the following: " + res.Message);
+          if (res.StatusCode !== 0) throw new Error("Error has occured. The api has sent the following: " + res.Message);
         })
       );
   }
