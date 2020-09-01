@@ -1,24 +1,18 @@
 html {
-    background-color: #25241f;
+    /* background-color: #25241f;
     background-image: linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)),
-    url("https://images5.alphacoders.com/601/601884.jpg");
-      /*url("https://images.alphacoders.com/485/485910.jpg");*/
-      /*https://images.alphacoders.com/485/485910.jpg */;
-    height: 100vh;
+    /* url("https://images5.alphacoders.com/601/601884.jpg"); */
+      /* url("https://images.alphacoders.com/485/485910.jpg"); */
+      /*https://images.alphacoders.com/485/485910.jpg ;*/
+    /* height: 100vh;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
-    background-attachment: fixed;
+    background-attachment: fixed; */ 
     color: whitesmoke;
     font-size: 150%;
     font-family: "Oxygen", "sans-serif" !important;
   }
-
-.mat-divider {
-    border-top-color: red;
-      border-style: solid;
-      height: 200px;
-}
 
 span{
   font-size: 70%;

@@ -16,6 +16,12 @@ enum Application {
   WEATHERBIT
 }
 
+const timeOfDayImage = {
+  "day": "https://images5.alphacoders.com/601/601884.jpg",
+  "evening": "https://images2.alphacoders.com/734/734513.jpg",
+  "night": "https://images.alphacoders.com/485/485910.jpg"
+};
+
 @Component({
   selector: 'app-sl-info',
   templateUrl: './sl-info.component.html',
@@ -34,6 +40,8 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   private monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   private application = ["SL", "Weatherbit"];
+  private count = 0;
+  private timeOfDay: string = "day";
 
   constructor(
     private slService: SLService,
@@ -43,8 +51,9 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions = [
       this.getClockSub(),
-      this.getWeatherApiSub(),
-      this.getSlApiSub()];
+      // this.getWeatherApiSub(),
+      // this.getSlApiSub()];
+    ];
   }
 
   ngOnDestroy() {
@@ -55,12 +64,18 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     return `https://www.weatherbit.io/static/img/icons/${code}.png`;
   }
 
+  public getBackground(): string {
+    const url = timeOfDayImage[this.timeOfDay];
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)), url("${url}")`;
+  }
+
   private getClockSub(): Subscription {
     return timer(0, 10000)
       .subscribe(() => {
         const nowDate = new Date();
         this.date = `${this.dayOfWeek[nowDate.getDay()]}, ${this.monthNames[nowDate.getMonth()]} ${nowDate.getDate()}`;
         this.now = nowDate.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+        this.timeOfDay = this.getTimeOfDay(nowDate);
       });
   }
 
@@ -165,6 +180,17 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private handleError(cause: number, errorMessage: string): void {
     this.errorMessage = `Error occured with the ${this.application[cause]} api. Please reload the page`;
     throw new Error(errorMessage);
+  }
+
+  private getTimeOfDay(date: Date): string {
+    const hour = date.getHours()
+    if (hour < 5 || hour > 19) {
+      return "night";
+    } else if (hour < 16) {
+      return "day";
+    } else {
+      return "evening";
+    }
   }
 
 

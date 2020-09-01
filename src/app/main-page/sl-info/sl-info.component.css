@@ -1,3 +1,22 @@
+#background {
+    position: absolute;
+    height: 100vh;
+    background-color: #25241f;
+    /* background-image: linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)),
+    url("https://images5.alphacoders.com/601/601884.jpg");
+      url("https://images.alphacoders.com/485/485910.jpg");
+      https://images.alphacoders.com/485/485910.jpg; */
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center top;
+    background-attachment: fixed;
+  }
+
 .container{
     display: flex; 
     flex-direction: column;
