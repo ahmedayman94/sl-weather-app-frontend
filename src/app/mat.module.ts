@@ -7,6 +7,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 // import {
 //     MatCheckboxModule,
@@ -50,7 +51,8 @@ import { NgModule } from '@angular/core';
         MatButtonModule,
         MatButtonToggleModule,
         MatNativeDateModule,
-        MatListModule
+        MatListModule,
+        MatIconModule
     ]
 })
 export class MaterialModule { }

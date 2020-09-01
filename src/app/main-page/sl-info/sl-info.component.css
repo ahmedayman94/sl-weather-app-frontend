@@ -23,7 +23,7 @@
     font-family: arial, helvetica, sans-serif;
     font-weight: normal;
     font-size: 95px;
-    margin-top: 10px;
+    margin: 0px;
     /* color: #f6a342; */
 }
 
@@ -78,5 +78,10 @@ p{
 
 .weather-list-item{
     width: 100%
+}
+
+.transportation-icon{
+    display:block;
+    font-size: 150%;
 }
 
