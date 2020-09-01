@@ -51,9 +51,9 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions = [
       this.getClockSub(),
-      // this.getWeatherApiSub(),
-      // this.getSlApiSub()];
-    ];
+      this.getWeatherApiSub(),
+      this.getSlApiSub()];
+    // ];
   }
 
   ngOnDestroy() {
@@ -81,20 +81,19 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private getSlApiSub(): Subscription {
     return timer(0, 30000).pipe(
-      switchMap(() => merge(this.fetchNextTableTimes(Stations.TESSIN_PARKEN), this.fetchNextTableTimes(Stations.GARDET_TUNNEL_BANA))),
+      switchMap(() => merge(this.slService.fetchNextTableTimes(Stations.TESSIN_PARKEN), this.slService.fetchNextTableTimes(Stations.GARDET_TUNNEL_BANA))),
       retryWhen(this.retryStrategy())
     )
       .subscribe(
         res => {
-          // this.latestUpdateTime = new Date(res.ResponseData.LatestUpdate);
           if (res.ResponseData.Metros.length > 0) {
             this.metroTimes = {
-              boardTime: this.getStrListOfNextArrivals(res.ResponseData.Metros),
+              boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Metros),
               latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
           } else {
             this.busTimes = {
-              boardTime: this.getStrListOfNextArrivals(res.ResponseData.Buses),
+              boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Buses),
               latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
           }
@@ -119,44 +118,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       }
     },
       err => this.handleError(Application.WEATHERBIT, err));
-  }
-
-  private fetchNextTableTimes(stationNumber: number): Observable<SLApiResponse> {
-    return this.slService.fetchNextTransportationTime(stationNumber)
-      .pipe(
-        tap(res => {
-          if (res.StatusCode !== 0) throw new Error("Error has occured. The api has sent the following: " + res.Message);
-        })
-      );
-  }
-
-  private getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[]): string {
-    function calculateOriginalTableTime(tm: SLTransportationMethod, now: Date): string {
-      if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
-        return '';
-      }
-      const timeDifference = new Date(Date.parse(tm.ExpectedDateTime) - now.getTime()).getMinutes();
-      const regex = new RegExp(/\d+/);
-      const regexResult = regex.exec(tm.DisplayTime);
-      if (regexResult.length > 0 && timeDifference.toString() === regexResult[0]) {
-        return '';
-      }
-
-      return `(Original Table Time: ${timeDifference} min)`;
-    }
-
-    let returnStr = "<ul>";
-    transportationMethod
-      .filter(tm => tm.JourneyDirection === 2)
-      .slice(0, 3) // Only return a maximum of 3 values
-      .forEach(tm => {
-        const now = new Date();
-        const originalTableTime = calculateOriginalTableTime(tm, now);
-        returnStr += `<li>${tm.DisplayTime}  <span style="font-size: 25%">${originalTableTime}</span> </li>`;
-      });
-    returnStr += "</ul>";
-
-    return returnStr;
   }
 
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
@@ -192,19 +153,4 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       return "evening";
     }
   }
-
-
-  // // This does not update the html page for some reason..
-  // private responseProcessor(res: SLApiResponse): void {
-  //   if (res.StatusCode !== 0) {
-  //     throw new Error("Error has occured. The api has sent the following: " + res.Message);
-  //   }
-  //   let transportationMethod: SLTransportationMethod[];
-
-  //   if (res.ResponseData.Buses.length > 0) {
-  //     transportationMethod = res.ResponseData.Buses;
-  //   } else {
-  //     transportationMethod = res.ResponseData.Metros;
-  //   }
-  // }
 }
