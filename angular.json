@@ -122,5 +122,8 @@
       }
     }
   },
-  "defaultProject": "my-sl-weather-frontend"
+  "defaultProject": "my-sl-weather-frontend",
+  "cli": {
+    "analytics": "b4809871-a258-4830-b971-61fe9cd2b65c"
+  }
 }
