@@ -13,7 +13,7 @@ enum Stations {
 
 enum Application {
   SL,
-  WEATHERBIT
+  CLIMACELL
 }
 
 @Component({
@@ -65,7 +65,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     this.subscriptions = [
       this.getClockSub(),
       this.getBackgroundImageSub(),
-      this.getWeatherApiSub(),
+      // this.getWeatherApiSub(),
       this.getSlApiSub(),
       this.getQuoteApiSub()
     ];
@@ -147,24 +147,22 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       );
   }
 
-  private getWeatherApiSub(): Subscription {
-    return this.clockService.hourlyMark$.pipe(
-      switchMap(() => this.weatherService.fetchWeather(8)),
-      retry(3),
-      map(res => res.data)
-    ).subscribe(res => {
-      for (let i = 0; i < res.length; i++) {
-        const data = res[i];
-
-        this.weatherInfo[i] = {
-          time: new Date(data.timestamp_local).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
-          temperature: `${Math.round(data.temp)} °C`,
-          icon: data.weather.icon
-        };
-      }
-    },
-      err => this.handleError(Application.WEATHERBIT, err));
-  }
+  // private getWeatherApiSub(): Subscription {
+  // return this.clockService.hourlyMark$.pipe(
+  //   switchMap(() => this.weatherService.fetchWeather(8)),
+  //   retry(3)
+  // ).subscribe(res => {
+  //   for (let i = 0; i < res.length; i++) {
+  //     const data = res[i];
+  //     this.weatherInfo[i] = {
+  //       time,
+  //       temperature: `${Math.round(data.temp.value)} °C`,
+  //       icon: `${data.weather_code.value}`
+  //     };
+  //   }
+  // },
+  //   err => this.handleError(Application.CLIMACELL, err));
+  // }
 
   private getQuoteApiSub(): Subscription {
     return this.quoteService.fetchQuote()

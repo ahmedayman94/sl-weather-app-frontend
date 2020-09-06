@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { WeatherbitApiResponse } from "src/app/shared/models/weatherbit-api-response.model";
+import { ClimacellResponseData } from '../models/climacell-responsedata.model';
+import { map } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
@@ -25,11 +27,11 @@ export class WeatherService {
         private httpClient: HttpClient
     ) { }
 
-    public fetchWeather(hours: number): Observable<WeatherbitApiResponse> {
-        const url = environment.production ?
-            `${environment.localWeatherApiUrl}?city=Stockholm&key=${environment.weatherApiKey}&hours=${hours}` :
-            './assets/weather-mockdata.json';
+    // public fetchWeather(hours: number): Observable<WeatherbitApiResponse> {
+    //     const url = environment.production ?
+    //         `${environment.localWeatherApiUrl}?city=Stockholm&key=${environment.weatherApiKey}&hours=${hours}` :
+    //         './assets/weather-mockdata.json';
 
-        return this.httpClient.get<WeatherbitApiResponse>(url);
-    }
+    //     return this.httpClient.get<WeatherbitApiResponse>(url);
+    // }
 }
