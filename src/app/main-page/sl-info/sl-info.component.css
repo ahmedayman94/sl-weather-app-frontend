@@ -93,6 +93,7 @@ p{
 #weather-list{
     display: flex;
     flex-direction: row;
+    font-size: 32px;
 }
 
 .weather-list-item{
