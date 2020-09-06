@@ -40,7 +40,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   private monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   private application = ["SL", "Weatherbit"];
-  private count = 0;
   private timeOfDay: string = "day";
 
   constructor(
@@ -81,7 +80,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private getSlApiSub(): Subscription {
     return timer(0, 30000).pipe(
-      switchMap(() => merge(this.slService.fetchNextTableTimes(Stations.TESSIN_PARKEN), this.slService.fetchNextTableTimes(Stations.GARDET_TUNNEL_BANA))),
+      switchMap(() => merge(this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA))),
       retryWhen(this.retryStrategy())
     )
       .subscribe(
