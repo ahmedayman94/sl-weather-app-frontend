@@ -29,6 +29,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public errorMessage: string;
 
   private subscriptions: Subscription[] = [];
+  private errorCounter = 0;
 
   private application = ["SL", "Weatherbit"];
   private url: string;
@@ -51,7 +52,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       this.getClockSub(),
       this.getBackgroundImageSub(),
       this.getWeatherApiSub(),
-      this.getSlApiSub(),
+      this.getSlApiSub()
     ];
   }
 
@@ -64,7 +65,11 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   public getImageByCode(code: string): string {
-    return `https://www.weatherbit.io/static/img/icons/${code}.png`;
+    const newImgMapped = this.weatherService.iconMapping[code];
+    const imgLink: string = newImgMapped ?
+      `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${newImgMapped}` :
+      `https://www.weatherbit.io/static/img/icons/${code}.png`;
+    return imgLink;
   }
 
   private getClockSub(): Subscription {
@@ -87,6 +92,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     )
       .subscribe(
         res => {
+          this.errorCounter = 0; // Reset error counter
           if (res.ResponseData.Metros.length > 0) {
             this.metroTimes = {
               boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Metros),
@@ -111,6 +117,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     ).subscribe(res => {
       for (let i = 0; i < res.length; i++) {
         const data = res[i];
+
         this.weatherInfo[i] = {
           time: new Date(data.timestamp_local).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
           temperature: `${Math.round(data.temp)} °C`,
@@ -127,9 +134,9 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
     return (attempts: Observable<any>) => {
       return attempts.pipe(
-        mergeMap((errors, i) => {
-          const retryAttempt = i + 1;
-          if (retryAttempt > maxRetryTimes) {
+        mergeMap((errors, _) => {
+          this.errorCounter += 1;
+          if (this.errorCounter > maxRetryTimes) {
             this.handleError(Application.SL, errors);
           }
           console.log(`${errors} \n Retrying..`);
