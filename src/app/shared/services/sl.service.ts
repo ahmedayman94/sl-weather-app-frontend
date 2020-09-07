@@ -14,7 +14,7 @@ export class SLService {
     }
 
     public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
-        return this.httpClient.get<SLApiResponse>(`/api2/realtimedeparturesV4.json?key=${environment.slApiKey}&siteid=${siteId}`)
+        return this.httpClient.get<SLApiResponse>(`${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}`)
             .pipe(
                 tap(res => {
                     if (res.StatusCode !== 0) throw new Error("Error has occured. The api has sent the following: " + res.Message);

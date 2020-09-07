@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SLService } from 'src/app/shared/services/sl.service';
-import { SLApiResponse } from 'src/app/shared/models/sl-api-response.model';
-import { SLTransportationMethod } from 'src/app/shared/models/sl-transportation-method.model';
 import { timer, merge, Observable, Subscription } from 'rxjs';
 import { switchMap, retryWhen, tap, mergeMap, map, retry } from 'rxjs/operators';
 import { WeatherService } from 'src/app/shared/services/weather.service';
+import { ClockService } from 'src/app/shared/services/clock.service';
 
 enum Stations {
   TESSIN_PARKEN = 1131,
@@ -15,12 +14,6 @@ enum Application {
   SL,
   WEATHERBIT
 }
-
-const timeOfDayImage = {
-  "day": "https://images5.alphacoders.com/601/601884.jpg",
-  "evening": "https://images2.alphacoders.com/734/734513.jpg",
-  "night": "https://images.alphacoders.com/485/485910.jpg"
-};
 
 @Component({
   selector: 'app-sl-info',
@@ -35,51 +28,60 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
   public errorMessage: string;
 
-  // private latestUpdateTime: Date;
   private subscriptions: Subscription[] = [];
-  private dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  private monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
   private application = ["SL", "Weatherbit"];
-  private timeOfDay: string = "day";
+  private url: string;
+  private readonly images = [
+    "https://images5.alphacoders.com/601/601884.jpg",
+    "https://images2.alphacoders.com/734/734513.jpg",
+    "https://wallpapercave.com/wp/wp2025113.jpg",
+    "https://images.alphacoders.com/109/1094713.jpg",
+    "https://images.alphacoders.com/485/485910.jpg",
+  ];
 
   constructor(
     private slService: SLService,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private clockService: ClockService
   ) { }
 
   ngOnInit() {
     this.subscriptions = [
       this.getClockSub(),
+      this.getBackgroundImageSub(),
       this.getWeatherApiSub(),
-      this.getSlApiSub()];
-    // ];
+      this.getSlApiSub(),
+    ];
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  public getBackground(): string {
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)), url("${this.url}")`;
+  }
+
   public getImageByCode(code: string): string {
     return `https://www.weatherbit.io/static/img/icons/${code}.png`;
   }
 
-  public getBackground(): string {
-    const url = timeOfDayImage[this.timeOfDay];
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)), url("${url}")`;
-  }
-
   private getClockSub(): Subscription {
-    return timer(0, 10000)
-      .subscribe(() => {
-        const nowDate = new Date();
-        this.date = `${this.dayOfWeek[nowDate.getDay()]}, ${this.monthNames[nowDate.getMonth()]} ${nowDate.getDate()}`;
-        this.now = nowDate.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
-        this.timeOfDay = this.getTimeOfDay(nowDate);
+    return this.clockService.getDateAndTimeObs()
+      .subscribe(dateAndTime => {
+        this.date = dateAndTime.date;
+        this.now = dateAndTime.time;
       });
   }
 
+  private getBackgroundImageSub(): Subscription {
+    return this.clockService.hourlyMark$
+      .subscribe(() => this.url = this.images[Math.round(Math.random() * (this.images.length - 1))])
+  }
+
   private getSlApiSub(): Subscription {
-    return timer(0, 30000).pipe(
+    return this.clockService.minuteMark$.pipe(
       switchMap(() => merge(this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA))),
       retryWhen(this.retryStrategy())
     )
@@ -102,7 +104,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   private getWeatherApiSub(): Subscription {
-    return timer(0, 3600000).pipe(
+    return this.clockService.hourlyMark$.pipe(
       switchMap(() => this.weatherService.fetchWeather(8)),
       retry(3),
       map(res => res.data)
@@ -140,16 +142,5 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private handleError(cause: number, errorMessage: string): void {
     this.errorMessage = `Error occured with the ${this.application[cause]} api. Please reload the page`;
     throw new Error(errorMessage);
-  }
-
-  private getTimeOfDay(date: Date): string {
-    const hour = date.getHours()
-    if (hour < 5 || hour > 19) {
-      return "night";
-    } else if (hour < 16) {
-      return "day";
-    } else {
-      return "evening";
-    }
   }
 }
