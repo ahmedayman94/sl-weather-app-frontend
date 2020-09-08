@@ -13,8 +13,16 @@ export class SLService {
     ) {
     }
 
+    public fetchSomething() {
+        return this.httpClient.get('')
+    }
+
     public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
-        return this.httpClient.get<SLApiResponse>(`${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}`)
+        const url = environment.production ?
+            `${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}` :
+            `./assets/sl-${siteId}-mockdata.json`;
+
+        return this.httpClient.get<SLApiResponse>(url)
             .pipe(
                 tap(res => {
                     if (res.StatusCode !== 0) throw new Error("Error has occured. The api has sent the following: " + res.Message);
@@ -44,7 +52,7 @@ export class SLService {
             .forEach(tm => {
                 const now = new Date();
                 const originalTableTime = calculateOriginalTableTime(tm, now);
-                returnStr += `<li>${tm.DisplayTime}  <span style="font-size: 25%">${originalTableTime}</span> </li>`;
+                returnStr += `<li>${tm.DisplayTime}  <span>${originalTableTime}</span> </li>`;
             });
         returnStr += "</ul>";
 

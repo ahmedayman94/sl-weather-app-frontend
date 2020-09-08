@@ -26,6 +26,10 @@ export class WeatherService {
     ) { }
 
     public fetchWeather(hours: number): Observable<WeatherbitApiResponse> {
-        return this.httpClient.get<WeatherbitApiResponse>(`${environment.localWeatherApiUrl}?city=Stockholm&key=${environment.weatherApiKey}&hours=${hours}`);
+        const url = environment.production ?
+            `${environment.localWeatherApiUrl}?city=Stockholm&key=${environment.weatherApiKey}&hours=${hours}` :
+            './assets/weather-mockdata.json';
+
+        return this.httpClient.get<WeatherbitApiResponse>(url);
     }
 }

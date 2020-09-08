@@ -1,0 +1,48 @@
+{
+    "StatusCode": 0,
+    "Message": null,
+    "ExecutionTime": 74,
+    "ResponseData": {
+        "LatestUpdate": "2020-09-08T21:31:36",
+        "DataAge": 55,
+        "Metros": [],
+        "Buses": [
+            {
+                "GroupOfLine": null,
+                "TransportMode": "BUS",
+                "LineNumber": "54",
+                "Destination": "Storängsbotten",
+                "JourneyDirection": 1,
+                "StopAreaName": "Tessinparken",
+                "StopAreaNumber": 10925,
+                "StopPointNumber": 10925,
+                "StopPointDesignation": null,
+                "TimeTabledDateTime": "2020-09-08T21:46:54",
+                "ExpectedDateTime": "2020-09-08T21:48:01",
+                "DisplayTime": "15 min",
+                "JourneyNumber": 38143,
+                "Deviations": null
+            },
+            {
+                "GroupOfLine": null,
+                "TransportMode": "BUS",
+                "LineNumber": "54",
+                "Destination": "Reimersholme",
+                "JourneyDirection": 2,
+                "StopAreaName": "Tessinparken",
+                "StopAreaNumber": 10925,
+                "StopPointNumber": 10926,
+                "StopPointDesignation": null,
+                "TimeTabledDateTime": "2020-09-08T21:52:59",
+                "ExpectedDateTime": "2020-09-08T21:52:59",
+                "DisplayTime": "20 min",
+                "JourneyNumber": 38199,
+                "Deviations": null
+            }
+        ],
+        "Trains": [],
+        "Trams": [],
+        "Ships": [],
+        "StopPointDeviations": []
+    }
+}
