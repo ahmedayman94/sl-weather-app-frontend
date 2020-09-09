@@ -21,7 +21,6 @@ export class SLService {
         const url = environment.production ?
             `${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}` :
             `./assets/sl-${siteId}-mockdata.json`;
-
         return this.httpClient.get<SLApiResponse>(url)
             .pipe(
                 tap(res => {

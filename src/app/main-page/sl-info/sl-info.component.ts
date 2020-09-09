@@ -4,6 +4,7 @@ import { timer, merge, Observable, Subscription } from 'rxjs';
 import { switchMap, retryWhen, tap, mergeMap, map, retry } from 'rxjs/operators';
 import { WeatherService } from 'src/app/shared/services/weather.service';
 import { ClockService } from 'src/app/shared/services/clock.service';
+import { QuoteService } from 'src/app/shared/services/quote.service';
 
 enum Stations {
   TESSIN_PARKEN = 1131,
@@ -27,6 +28,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public date: string;
   public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
   public errorMessage: string;
+  public quote = { quoteStr: null, author: null };
 
   private subscriptions: Subscription[] = [];
   private errorCounter = 0;
@@ -35,21 +37,22 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private url: string;
   private readonly images = [
     "https://vistapointe.net/images/stockholm-7.jpg",
-    "https://cdn.pixabay.com/photo/2015/07/16/23/05/stockholm-848255_1280.jpg",
-    "https://images.unsplash.com/photo-1542096275-2c33b1bdb375?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
-    "https://images.unsplash.com/photo-1484037832928-afe345637f55?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80",
-    "https://images.unsplash.com/photo-1508189860359-777d945909ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
-    "https://images5.alphacoders.com/601/601884.jpg",
-    "https://images2.alphacoders.com/734/734513.jpg",
-    "https://wallpapercave.com/wp/wp2025113.jpg",
-    "https://images.alphacoders.com/109/1094713.jpg",
-    "https://images.alphacoders.com/485/485910.jpg",
+    // "https://cdn.pixabay.com/photo/2015/07/16/23/05/stockholm-848255_1280.jpg",
+    // "https://images.unsplash.com/photo-1542096275-2c33b1bdb375?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
+    // "https://images.unsplash.com/photo-1484037832928-afe345637f55?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80",
+    // "https://images.unsplash.com/photo-1508189860359-777d945909ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
+    // "https://images5.alphacoders.com/601/601884.jpg",
+    // "https://images2.alphacoders.com/734/734513.jpg",
+    // "https://wallpapercave.com/wp/wp2025113.jpg",
+    // "https://images.alphacoders.com/109/1094713.jpg",
+    // "https://images.alphacoders.com/485/485910.jpg",
   ];
 
   constructor(
     private slService: SLService,
     private weatherService: WeatherService,
-    private clockService: ClockService
+    private clockService: ClockService,
+    private quoteService: QuoteService
   ) { }
 
   ngOnInit() {
@@ -57,7 +60,8 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       this.getClockSub(),
       this.getBackgroundImageSub(),
       this.getWeatherApiSub(),
-      this.getSlApiSub()
+      this.getSlApiSub(),
+      this.getQuoteApiSub()
     ];
   }
 
@@ -66,7 +70,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   public getBackground(): string {
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)), url("${this.url}")`;
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${this.url}")`;
   }
 
   public getImageByCode(code: string): string {
@@ -132,6 +136,14 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       }
     },
       err => this.handleError(Application.WEATHERBIT, err));
+  }
+
+  private getQuoteApiSub(): Subscription {
+    return this.quoteService.fetchQuote()
+      .subscribe(res => {
+        this.quote.quoteStr = res.content;
+        this.quote.author = res.author;
+      });
   }
 
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {

@@ -17,7 +17,7 @@
                 <span class="material-icons transportation-icon">
                     directions_bus
                 </span>
-                Tessinparken Linje 54 <p>(Latest update: {{busTimes?.latestUpdate}})
+                Tessinparken Linje 54 <p class="latest-update">(Latest update: {{busTimes?.latestUpdate}})
                 </p>
             </div>
             <div>
@@ -30,7 +30,7 @@
                 <span class="material-icons transportation-icon">
                     directions_subway
                 </span>
-                Gärdet Linje 13 <p>(Latest update: {{metroTimes?.latestUpdate}})</p>
+                Gärdet Linje 13 <p class="latest-update">(Latest update: {{metroTimes?.latestUpdate}})</p>
             </div>
             <div>
                 <div class="board-times" [innerHTML]=metroTimes?.boardTime>
@@ -38,7 +38,10 @@
             </div>
         </div>
     </div>
-
+    <div id="quote">
+        {{this.quote?.quoteStr}}
+        <p id="quote-author">- {{this.quote?.author}}</p>
+    </div>
     <div class="container-weather">
         <div id="weather-list">
             <div class="weather-list-item" *ngFor="let w of weatherInfo">

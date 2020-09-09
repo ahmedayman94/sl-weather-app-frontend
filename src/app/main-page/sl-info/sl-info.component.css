@@ -50,7 +50,6 @@
     display: flex;
     justify-content: center;
     text-align: center;
-    
 }
 
 .schedule{
@@ -72,7 +71,7 @@
     margin: 0px 25px !important;
 }
 
-p{
+.latest-update{
     margin: 0px;
     font-size: 50% !important;
 }
@@ -105,3 +104,17 @@ p{
     font-size: 150%;
 }
 
+#quote{
+    font-style: italic;
+    padding: 0px 150px;
+    font-size: 32px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#quote-author{
+    font-style: normal !important;
+    text-align: right;
+    padding: 0px;
+    margin: 0px;
+}
