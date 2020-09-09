@@ -13,10 +13,6 @@ export class SLService {
     ) {
     }
 
-    public fetchSomething() {
-        return this.httpClient.get('')
-    }
-
     public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
         const url = environment.production ?
             `${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}` :
