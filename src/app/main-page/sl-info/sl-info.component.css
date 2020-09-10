@@ -114,7 +114,7 @@
 
 #quote-author{
     font-style: normal !important;
-    text-align: right;
     padding: 0px;
-    margin: 0px;
+    margin: 20px 0px 0px 0px;
+    /* color: #b1b5b9; */
 }
