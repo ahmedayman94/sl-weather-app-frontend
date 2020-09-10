@@ -1,14 +1,17 @@
 <div id="background" [ngStyle]="{'background-image': this.getBackground()}"></div>
 <div class="container">
-    <div class="container-error">
-        {{this.errorMessage}}
+    <div class="container-error" [ngStyle]="{'color': this.errorSlObj.color}">
+        {{ this.errorSlObj.message }}
+    </div>
+    <div class="container-error" [ngStyle]="{'color': this.errorWeatherObj.color}">
+        {{ this.errorWeatherObj.message }}
     </div>
     <div class="container-header">
         <div>
-            {{this.date}}
+            {{this.dateTime?.date}}
         </div>
         <div id="clock-now">
-            {{this.now}}
+            {{this.dateTime?.time}}
         </div>
     </div>
     <div class="container-schedule">
@@ -17,11 +20,12 @@
                 <span class="material-icons transportation-icon">
                     directions_bus
                 </span>
-                Tessinparken Linje 54 <p class="latest-update">(Latest update: {{busTimes?.latestUpdate}})
+                Tessinparken Linje 54 <p class="latest-update">(Latest update:
+                    {{this.transportationTimes.bus?.latestUpdate}})
                 </p>
             </div>
             <div>
-                <div class="board-times" [innerHTML]=busTimes?.boardTime>
+                <div class="board-times" [innerHTML]=this.transportationTimes.bus?.boardTime>
                 </div>
             </div>
         </div>
@@ -30,10 +34,11 @@
                 <span class="material-icons transportation-icon">
                     directions_subway
                 </span>
-                Gärdet Linje 13 <p class="latest-update">(Latest update: {{metroTimes?.latestUpdate}})</p>
+                Gärdet Linje 13 <p class="latest-update">(Latest update:
+                    {{this.transportationTimes.metro?.latestUpdate}})</p>
             </div>
             <div>
-                <div class="board-times" [innerHTML]=metroTimes?.boardTime>
+                <div class="board-times" [innerHTML]=this.transportationTimes.metro?.boardTime>
                 </div>
             </div>
         </div>

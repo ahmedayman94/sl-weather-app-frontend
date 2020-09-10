@@ -22,17 +22,17 @@ enum Application {
   styleUrls: ['./sl-info.component.css']
 })
 export class SlInfoComponent implements OnInit, OnDestroy {
-  public busTimes: { boardTime: string, latestUpdate: string };
-  public metroTimes: { boardTime: string, latestUpdate: string };
-  public now: string;
-  public date: string;
+  public transportationTimes = {
+    bus: { boardTime: "", latestUpdate: "" },
+    metro: { boardTime: "", latestUpdate: "" }
+  };
+  public dateTime: { time: string, date: string };
   public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
-  public errorMessage: string;
+  public errorSlObj = { message: "", color: "red", counter: 0 };
+  public errorWeatherObj = { message: "", color: "red" };
   public quote = { quoteStr: null, author: null };
 
   private subscriptions: Subscription[] = [];
-  private errorCounter = 0;
-
   private application = ["SL", "Weatherbit"];
   private url: string;
   private readonly images = [
@@ -85,8 +85,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private getClockSub(): Subscription {
     return this.clockService.getDateAndTimeObs()
       .subscribe(dateAndTime => {
-        this.date = dateAndTime.date;
-        this.now = dateAndTime.time;
+        this.dateTime = { date: dateAndTime.date, time: dateAndTime.time };
       });
   }
 
@@ -102,14 +101,15 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     )
       .subscribe(
         res => {
-          this.errorCounter = 0; // Reset error counter
+          this.errorSlObj.counter = 0; // Reset error counter
+          this.errorSlObj.message = "";
           if (res.ResponseData.Metros.length > 0) {
-            this.metroTimes = {
+            this.transportationTimes.metro = {
               boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Metros),
               latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
           } else {
-            this.busTimes = {
+            this.transportationTimes.bus = {
               boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Buses),
               latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
             };
@@ -147,25 +147,40 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
-    const maxRetryTimes = 5;
-    const delayTime = 15000;
+    const maxSlowerRetryTimes = 15, // Slower retry that runs every 10 minutes
+      maxRetryTimes = 5,
+      delayTime = 15000,
+      slowerDelayTime = 60000 * 10; // Delay time of 10 minutes
 
     return (attempts: Observable<any>) => {
       return attempts.pipe(
         mergeMap((errors, _) => {
-          this.errorCounter += 1;
-          if (this.errorCounter > maxRetryTimes) {
-            this.handleError(Application.SL, errors);
+          this.errorSlObj.counter += 1;
+          if (this.errorSlObj.counter > maxRetryTimes) {
+            if (this.errorSlObj.counter > maxSlowerRetryTimes) {
+              this.handleError(Application.SL, errors);
+            } else {
+              this.handleError(Application.SL, errors, slowerDelayTime);
+              return timer(slowerDelayTime);
+            }
           }
-          console.log(`${errors} \n Retrying..`);
+          console.log(`${errors} \nRetrying..`);
           return timer(delayTime);
         })
       );
     };
   }
 
-  private handleError(cause: number, errorMessage: string): void {
-    this.errorMessage = `Error occured with the ${this.application[cause]} api. Please reload the page`;
-    throw new Error(errorMessage);
+  private handleError(cause: number, errorMessage: string, timeDelayMinutes?: number): void {
+    if (timeDelayMinutes) {
+      const now = new Date();
+      const time = (new Date(now.getTime() + 60000 * timeDelayMinutes)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+      this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
+      this.errorSlObj.color = "orange";
+    } else {
+      this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
+      this.errorSlObj.color = "red";
+      throw new Error(errorMessage);
+    }
   }
 }
