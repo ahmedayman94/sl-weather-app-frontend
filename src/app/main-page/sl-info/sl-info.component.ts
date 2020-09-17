@@ -74,10 +74,10 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   public getImageByCode(code: string): string {
-    const newImgMapped = this.weatherService.iconMapping[code];
-    const imgLink: string = newImgMapped ?
-      `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${newImgMapped}` :
-      `https://www.weatherbit.io/static/img/icons/${code}.png`;
+    const newImgMapped = this.weatherService.iconMapping[code],
+      imgLink = newImgMapped ?
+        `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${newImgMapped}` :
+        `https://www.weatherbit.io/static/img/icons/${code}.png`;
 
     return imgLink;
   }
@@ -171,10 +171,10 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     };
   }
 
-  private handleError(cause: number, errorMessage: string, timeDelayMinutes?: number): void {
-    if (timeDelayMinutes) {
+  private handleError(cause: number, errorMessage: string, timeDelayMs?: number): void {
+    if (timeDelayMs) {
       const now = new Date();
-      const time = (new Date(now.getTime() + 60000 * timeDelayMinutes)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+      const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
       this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
       this.errorSlObj.color = "orange";
     } else {
