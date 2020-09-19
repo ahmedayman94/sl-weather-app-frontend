@@ -46,6 +46,10 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     "https://wallpapercave.com/wp/wp2025113.jpg",
     "https://images.alphacoders.com/109/1094713.jpg",
     "https://images.alphacoders.com/485/485910.jpg",
+    "/assets/img/bastien-herve--QBnKsP1P00-unsplash.jpg",
+    "/assets/img/henrik_trygg-archipelago-4145.jpg",
+    "/assets/img/wallpaperflare.com_wallpaper.jpg",
+    "/assets/img/Stockholm Wallpaper Live Stockholm Wallpapers CAT98 Stockholm ....jpg"
   ];
 
   constructor(
