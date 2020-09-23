@@ -49,7 +49,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     "/assets/img/bastien-herve--QBnKsP1P00-unsplash.jpg",
     "/assets/img/henrik_trygg-archipelago-4145.jpg",
     "/assets/img/wallpaperflare.com_wallpaper.jpg",
-    "/assets/img/Stockholm Wallpaper Live Stockholm Wallpapers CAT98 Stockholm ....jpg"
+    "/assets/img/Stockholm_Wallpaper_Live_Stockholm_Wallpapers_CAT98_Stockholm.jpg"
   ];
 
   constructor(

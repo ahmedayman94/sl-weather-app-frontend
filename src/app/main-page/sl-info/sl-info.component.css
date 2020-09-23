@@ -2,10 +2,6 @@
     position: absolute;
     height: 100vh;
     background-color: #25241f;
-    /* background-image: linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.3)),
-    url("https://images5.alphacoders.com/601/601884.jpg");
-      url("https://images.alphacoders.com/485/485910.jpg");
-      https://images.alphacoders.com/485/485910.jpg; */
     height: 100vh;
     width: 100%;
     top: 0;
@@ -42,7 +38,6 @@
     font-weight: normal;
     font-size: 95px;
     margin: 0px;
-    /* color: #f6a342; */
 }
 
 .container-schedule{
@@ -56,12 +51,10 @@
     flex-direction: column;
     margin: 0px 100px;
     width: 50%;
-    /* color: #ffd575; */
 }
 
 .title{
     font-size: 42px;
-    /* text-align: center; */
     font-weight: bolder;
     font-size: 42px !important;
 }
@@ -115,5 +108,4 @@
     font-style: normal !important;
     padding: 0px;
     margin: 20px 0px 0px 0px;
-    /* color: #b1b5b9; */
 }
