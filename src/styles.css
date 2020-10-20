@@ -12,6 +12,7 @@ html {
     color: whitesmoke;
     font-size: 150%;
     font-family: "Oxygen", "sans-serif" !important;
+    overflow: hidden;
   }
 
 span{

@@ -6,27 +6,30 @@ import { map } from 'rxjs/operators';
 export class ClockService {
     private readonly dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     private readonly monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    private readonly _hourlyMark$ = new BehaviorSubject<any>(null);
-    private readonly _minuteMark$ = new BehaviorSubject<any>(null);
+    private readonly _hourlyMark$ = new BehaviorSubject<void>(null);
+    private readonly _minuteMark$ = new BehaviorSubject<void>(null);
+    private readonly _tenSecondMark$ = new BehaviorSubject<void>(null);
+
     private readonly intervalOverMinuteMark = 30
 
     public hourlyMark$ = this._hourlyMark$.asObservable();
     public minuteMark$ = this._minuteMark$.asObservable();
+    public tenSecondMark$ = this._tenSecondMark$.asObservable();
 
-    constructor() {
-
-    }
+    constructor() { }
 
     public getDateAndTimeObs(): Observable<{ date: string, time: string }> {
         return timer(0, 10000)
             .pipe(
                 map(() => {
+                    // Used for rapid debugging
+                    // this._tenSecondMark$.next();
                     const nowDate = new Date();
                     if (nowDate.getSeconds() < 10 + this.intervalOverMinuteMark
                         && nowDate.getSeconds() >= this.intervalOverMinuteMark) {
-                        this._minuteMark$.next(null);
+                        this._minuteMark$.next();
                         if (nowDate.getMinutes() < 1) {
-                            this._hourlyMark$.next(null);
+                            this._hourlyMark$.next();
                         }
                     }
 

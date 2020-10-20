@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SLService } from 'src/app/shared/services/sl.service';
 import { timer, merge, Observable, Subscription } from 'rxjs';
-import { switchMap, retryWhen, tap, mergeMap, map, retry } from 'rxjs/operators';
+import { switchMap, retryWhen, mergeMap, map, retry, skip } from 'rxjs/operators';
 import { WeatherService } from 'src/app/shared/services/weather.service';
 import { ClockService } from 'src/app/shared/services/clock.service';
 import { QuoteService } from 'src/app/shared/services/quote.service';
@@ -31,10 +31,12 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public errorSlObj = { message: "", color: "red", counter: 0 };
   public errorWeatherObj = { message: "", color: "red" };
   public quote = { quoteStr: null, author: null };
+  public showFirst = true;
+  public urlTop: string;
+  public urlBottom: string;
 
   private subscriptions: Subscription[] = [];
   private application = ["SL", "Weatherbit"];
-  private url: string;
   private readonly images = [
     "https://vistapointe.net/images/stockholm-7.jpg",
     "https://cdn.pixabay.com/photo/2015/07/16/23/05/stockholm-848255_1280.jpg",
@@ -73,8 +75,14 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  public getBackground(): string {
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${this.url}")`;
+  public getBackgroundTop(): string {
+    const url = this.urlTop ?? '';
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
+  }
+
+  public getBackgroundBottom(): string {
+    const url = this.urlBottom ?? '';
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
   }
 
   public getImageByCode(code: string): string {
@@ -95,7 +103,23 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private getBackgroundImageSub(): Subscription {
     return this.clockService.hourlyMark$
-      .subscribe(() => this.url = this.images[Math.round(Math.random() * (this.images.length - 1))])
+      .subscribe(() => {
+        const url = this.images[Math.round(Math.random() * (this.images.length - 1))];
+
+        // We do this in order to wait for the image to load before displaying it
+        const image: HTMLImageElement = document.createElement('img');
+        let self = this;
+        image.addEventListener('load', function handleImageLoad() {
+          if (self.showFirst) {
+            self.urlTop = url;
+          } else {
+            self.urlBottom = url;
+          }
+          self.showFirst = !self.showFirst;
+          image.removeEventListener('load', handleImageLoad);
+        });
+        image.src = url; // begin loading image (to browser cache)
+      });
   }
 
   private getSlApiSub(): Subscription {

@@ -1,4 +1,4 @@
-#background {
+.background {
     position: absolute;
     height: 100vh;
     background-color: #25241f;
@@ -6,12 +6,34 @@
     width: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
     background-attachment: fixed;
-  }
+}
+
+.top{
+    z-index: -1;
+    opacity: 1;
+    -webkit-transition: opacity 1s ease-in-out;
+       -moz-transition: opacity 1s ease-in-out;
+        -ms-transition: opacity 1s ease-in-out;
+         -o-transition: opacity 1s ease-in-out;
+            transition: opacity 1s ease-in-out;
+}
+
+.hide{
+    opacity: 0;
+}
+
+.bottom{
+    z-index: -9000;
+    -webkit-transition: opacity 1s ease-in-out;
+       -moz-transition: opacity 1s ease-in-out;
+        -ms-transition: opacity 1s ease-in-out;
+         -o-transition: opacity 1s ease-in-out;
+            transition: opacity 1s ease-in-out;
+}
 
 .container{
     display: flex; 
