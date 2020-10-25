@@ -15,7 +15,7 @@ export class SLService {
 
     public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
         const url = environment.production ?
-            `${environment.localSlApiUrl}?key=${environment.slApiKey}&siteid=${siteId}` :
+            `${environment.localSLApiUrl}?siteid=${siteId}` :
             `./assets/sl-${siteId}-mockdata.json`;
         return this.httpClient.get<SLApiResponse>(url)
             .pipe(

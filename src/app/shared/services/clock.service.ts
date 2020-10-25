@@ -35,7 +35,7 @@ export class ClockService {
 
                     return {
                         date: `${this.dayOfWeek[nowDate.getDay()]}, ${this.monthNames[nowDate.getMonth()]} ${nowDate.getDate()}`,
-                        time: nowDate.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
+                        time: nowDate.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
                     }
                 })
             );

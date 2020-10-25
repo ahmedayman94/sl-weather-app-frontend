@@ -5,6 +5,7 @@ import { switchMap, retryWhen, mergeMap, map, retry, skip } from 'rxjs/operators
 import { WeatherService } from 'src/app/shared/services/weather.service';
 import { ClockService } from 'src/app/shared/services/clock.service';
 import { QuoteService } from 'src/app/shared/services/quote.service';
+import { SunTimes } from 'src/app/shared/models/sun-time.model';
 
 enum Stations {
   TESSIN_PARKEN = 1131,
@@ -13,7 +14,13 @@ enum Stations {
 
 enum Application {
   SL,
-  WEATHERBIT
+  WEATHERBIT,
+  CLIMACELL
+}
+
+enum WeatherApp {
+  WEATHERBIT,
+  CLIMACELL
 }
 
 @Component({
@@ -27,6 +34,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     metro: { boardTime: "", latestUpdate: "" }
   };
   public dateTime: { time: string, date: string };
+  public sunTime: SunTimes;
   public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
   public errorSlObj = { message: "", color: "red", counter: 0 };
   public errorWeatherObj = { message: "", color: "red" };
@@ -34,6 +42,11 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public showFirst = true;
   public urlTop: string;
   public urlBottom: string;
+
+  /**
+   * Choose the weather api
+   */
+  public weatherApp = WeatherApp.CLIMACELL;
 
   private subscriptions: Subscription[] = [];
   private application = ["SL", "Weatherbit"];
@@ -53,6 +66,10 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     "/assets/img/wallpaperflare.com_wallpaper.jpg",
     "/assets/img/Stockholm_Wallpaper_Live_Stockholm_Wallpapers_CAT98_Stockholm.jpg"
   ];
+  public readonly sunImages = {
+    sunrise: "./assets/img/sunrise.png",
+    sunset: "./assets/img/sunset.png"
+  }
 
   constructor(
     private slService: SLService,
@@ -85,11 +102,16 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
   }
 
-  public getImageByCode(code: string): string {
-    const newImgMapped = this.weatherService.iconMapping[code],
+  public getImageByCode(code: string, weatherApp: WeatherApp): string {
+    let imgLink: string;
+    if (weatherApp === WeatherApp.WEATHERBIT) {
+      const newImgMapped = this.weatherService.weatherbitIconMapping[code];
       imgLink = newImgMapped ?
         `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${newImgMapped}` :
         `https://www.weatherbit.io/static/img/icons/${code}.png`;
+    } else {
+      imgLink = `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${code}.svg`;
+    }
 
     return imgLink;
   }
@@ -134,12 +156,12 @@ export class SlInfoComponent implements OnInit, OnDestroy {
           if (res.ResponseData.Metros.length > 0) {
             this.transportationTimes.metro = {
               boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Metros),
-              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
+              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
             };
           } else {
             this.transportationTimes.bus = {
               boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Buses),
-              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' })
+              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
             };
           }
         },
@@ -148,22 +170,54 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   }
 
   private getWeatherApiSub(): Subscription {
-    return this.clockService.hourlyMark$.pipe(
-      switchMap(() => this.weatherService.fetchWeather(8)),
-      retry(3),
-      map(res => res.data)
-    ).subscribe(res => {
-      for (let i = 0; i < res.length; i++) {
-        const data = res[i];
+    let sub: Subscription;
 
-        this.weatherInfo[i] = {
-          time: new Date(data.timestamp_local).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }),
-          temperature: `${Math.round(data.temp)} °C`,
-          icon: data.weather.icon
+    if (this.weatherApp === WeatherApp.WEATHERBIT) {
+      sub = this.clockService.hourlyMark$.pipe(
+        switchMap(() => this.weatherService.fetchWeatherWeatherbit(8)),
+        retry(3),
+        map(res => res.data)
+      ).subscribe(res => {
+        for (let i = 0; i < res.length; i++) {
+          const data = res[i];
+          this.weatherInfo[i] = {
+            time: new Date(data.timestamp_local).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
+            temperature: `${Math.round(data.temp)} °C`,
+            icon: data.weather.icon
+          };
+        }
+      },
+        err => this.handleError(Application.WEATHERBIT, err));
+    } else {
+      sub = this.clockService.hourlyMark$.pipe(
+        switchMap(() => this.weatherService.fetchWeatherClimacell()),
+        retry(3)
+      ).subscribe(res => {
+        const sunDateObjs = {
+          sunriseDateObj: new Date(res[0].sunrise.value),
+          sunsetDateObj: new Date(res[0].sunset.value)
         };
-      }
-    },
-      err => this.handleError(Application.WEATHERBIT, err));
+
+        this.sunTime = {
+          sunrise: this.weatherService.getTimeForSunClimacell(sunDateObjs.sunriseDateObj),
+          sunset: this.weatherService.getTimeForSunClimacell(sunDateObjs.sunsetDateObj)
+        };
+
+        for (let i = 0; i < res.length; i++) {
+          const data = res[i];
+
+          this.weatherInfo[i] = {
+            time: new Date(data.observation_time.value).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
+            temperature: `${Math.round(data.temp.value)} °C`,
+            icon: data.weather_code.value
+          };
+        }
+      },
+        err => this.handleError(Application.WEATHERBIT, err));
+    }
+
+    return sub;
+
   }
 
   private getQuoteApiSub(): Subscription {
@@ -202,7 +256,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   private handleError(cause: number, errorMessage: string, timeDelayMs?: number): void {
     if (timeDelayMs) {
       const now = new Date();
-      const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
+      const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
       this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
       this.errorSlObj.color = "orange";
     } else {

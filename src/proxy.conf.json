@@ -7,5 +7,9 @@
         "target": "https://api.weatherbit.io",
         "secure": false,
         "logLevel": "debug"
+    },
+    "/v3/weather/forecast/hourly": {
+        "target": "http://localhost:9090",
+        "secure": false
     }
 }

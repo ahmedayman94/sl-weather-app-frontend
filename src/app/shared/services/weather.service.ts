@@ -3,10 +3,12 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { WeatherbitApiResponse } from "src/app/shared/models/weatherbit-api-response.model";
+import { ClimacellApiResponseData } from "src/app/shared/models/climacell-api-responsedata.model";
+import { SunTimesDataContent } from '../models/sun-time.model';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
-    public readonly iconMapping = {
+    public readonly weatherbitIconMapping = {
         "c01d": "clear_day.svg",
         "c01n": "clear_night.svg",
         "c02d": "partly_cloudy_day.svg",
@@ -25,11 +27,30 @@ export class WeatherService {
         private httpClient: HttpClient
     ) { }
 
-    public fetchWeather(hours: number): Observable<WeatherbitApiResponse> {
+    public fetchWeatherWeatherbit(hours: number): Observable<WeatherbitApiResponse> {
         const url = environment.production ?
-            `${environment.localWeatherApiUrl}?city=Stockholm&key=${environment.weatherApiKey}&hours=${hours}` :
-            './assets/weather-mockdata.json';
+            `${environment.localWeatherApiUrl}?city=Stockholm&hours=${hours}` :
+            environment.localWeatherApiUrl;
 
         return this.httpClient.get<WeatherbitApiResponse>(url);
+    }
+
+    public fetchWeatherClimacell(): Observable<ClimacellApiResponseData[]> {
+        const startTimeDate = new Date();
+        const endTimeDate = new Date(startTimeDate.getTime() + 60 * 60 * 1000 * 8);
+        const startTime = startTimeDate.toISOString();
+        const endTime = endTimeDate.toISOString();
+
+        const url = environment.production ?
+            `${environment.localClimacellApiUrl}?lat=59.32932349999999&lon=18.0685808&unit_system=si&fields=temp,precipitation_type,precipitation_probability,sunrise,sunset,weather_code&start_time=${startTime}&end_time=${endTime}` : environment.localClimacellApiUrl;
+
+        return this.httpClient.get<ClimacellApiResponseData[]>(url);
+    }
+
+    public getTimeForSunClimacell(sunDateObj: Date): SunTimesDataContent {
+        return {
+            comparisonValues: { hours: sunDateObj.getHours(), minutes: sunDateObj.getMinutes() },
+            time: sunDateObj.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+        };
     }
 }

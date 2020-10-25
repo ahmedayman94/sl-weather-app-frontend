@@ -1,3 +1,7 @@
+/**
+* Background section
+*/
+
 .background {
     position: absolute;
     height: 100vh;
@@ -12,80 +16,91 @@
     background-attachment: fixed;
 }
 
-.top{
+.top {
     z-index: -1;
     opacity: 1;
     -webkit-transition: opacity 1s ease-in-out;
-       -moz-transition: opacity 1s ease-in-out;
-        -ms-transition: opacity 1s ease-in-out;
-         -o-transition: opacity 1s ease-in-out;
-            transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -ms-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
 }
 
-.hide{
+.hide {
     opacity: 0;
 }
 
-.bottom{
+.bottom {
     z-index: -9000;
     -webkit-transition: opacity 1s ease-in-out;
-       -moz-transition: opacity 1s ease-in-out;
-        -ms-transition: opacity 1s ease-in-out;
-         -o-transition: opacity 1s ease-in-out;
-            transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -ms-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
 }
 
-.container{
-    display: flex; 
+.container {
+    display: flex;
     flex-direction: column;
-    height: 90vh;
+    height: 95vh;
     padding: 10px;
 }
 
-.container-error{
+.container-error {
     font-weight: bold;
     font-size: 24px;
     text-align: right;
 }
 
-.container-header{
+
+/**
+* Date & Time now
+**/
+
+.container-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-#clock-now{
+#clock-now {
     font-family: arial, helvetica, sans-serif;
     font-weight: normal;
     font-size: 95px;
     margin: 0px;
 }
 
-.container-schedule{
+
+/**
+* SL Information
+**/
+
+.container-schedule {
     display: flex;
     justify-content: center;
     text-align: center;
 }
 
-.schedule{
+.schedule {
     display: flex;
     flex-direction: column;
     margin: 0px 100px;
     width: 50%;
 }
 
-.title{
+.title {
     font-size: 42px;
     font-weight: bolder;
     font-size: 42px !important;
 }
 
-#bus, #metro{
+#bus,
+#metro {
     margin: 0px 25px !important;
 }
 
-.latest-update{
+.latest-update {
     margin: 0px;
     font-size: 50% !important;
 }
@@ -97,28 +112,17 @@
     width: 100%
 }
 
-.container-weather{
-    padding: 0px 150px;
-    margin-top:auto;
-}
-
-#weather-list{
-    display: flex;
-    flex-direction: row;
-    font-size: 32px;
-}
-
-.weather-list-item{
-    width: 100%;
-    text-align: center;
-}
-
-.transportation-icon{
-    display:block;
+.transportation-icon {
+    display: block;
     font-size: 150%;
 }
 
-#quote{
+
+/**
+* Quote 
+**/
+
+#quote {
     font-style: italic;
     padding: 0px 150px;
     font-size: 32px;
@@ -126,8 +130,40 @@
     font-weight: bold;
 }
 
-#quote-author{
+#quote-author {
     font-style: normal !important;
     padding: 0px;
     margin: 20px 0px 0px 0px;
+}
+
+
+/**
+* Weather and sunrise/sunset times
+**/
+
+.container-weather {
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.container-weather>* {
+    text-align: center;
+    font-size: 32px;
+}
+
+#sun-times {
+    width: 15%;
+}
+
+#weather-list {
+    display: flex;
+    flex-direction: row;
+    width: 70%;
+    justify-content: space-around;
+}
+
+.weather-list-item {
+    width: 100%;
+    text-align: center;
 }
