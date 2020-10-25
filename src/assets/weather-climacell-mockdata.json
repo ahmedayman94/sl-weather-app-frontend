@@ -1,63 +1,132 @@
-[
-    {
+[{
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 9.67,
+            "value": 10.96,
             "units": "C"
         },
         "precipitation_type": {
-            "value": "none"
+            "value": "rain"
         },
         "precipitation_probability": {
             "value": 10,
             "units": "%"
         },
+        "feels_like": {
+            "value": 10.96,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-21T05:41:14.650Z"
+            "value": "2020-10-25T05:51:01.680Z"
         },
         "sunset": {
-            "value": "2020-10-21T15:23:07.479Z"
+            "value": "2020-10-25T15:12:18.375Z"
         },
         "weather_code": {
-            "value": "cloudy"
+            "value": "drizzle"
         },
         "observation_time": {
-            "value": "2020-10-21T20:00:00.000Z"
+            "value": "2020-10-25T19:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 9.8,
+            "value": 11,
             "units": "C"
         },
         "precipitation_type": {
-            "value": "none"
+            "value": "rain"
+        },
+        "precipitation_probability": {
+            "value": 15,
+            "units": "%"
+        },
+        "feels_like": {
+            "value": 11,
+            "units": "C"
+        },
+        "sunrise": {
+            "value": "2020-10-25T05:51:01.680Z"
+        },
+        "sunset": {
+            "value": "2020-10-25T15:12:18.375Z"
+        },
+        "weather_code": {
+            "value": "drizzle"
+        },
+        "observation_time": {
+            "value": "2020-10-25T20:00:00.000Z"
+        }
+    },
+    {
+        "lat": 59.32932349999999,
+        "lon": 18.0685808,
+        "temp": {
+            "value": 11.02,
+            "units": "C"
+        },
+        "precipitation_type": {
+            "value": "rain"
         },
         "precipitation_probability": {
             "value": 25,
             "units": "%"
         },
+        "feels_like": {
+            "value": 7,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-21T05:41:14.650Z"
+            "value": "2020-10-25T05:51:01.680Z"
         },
         "sunset": {
-            "value": "2020-10-21T15:23:07.479Z"
+            "value": "2020-10-25T15:12:18.375Z"
         },
         "weather_code": {
-            "value": "cloudy"
+            "value": "drizzle"
         },
         "observation_time": {
-            "value": "2020-10-21T21:00:00.000Z"
+            "value": "2020-10-25T21:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 9.95,
+            "value": 10.95,
+            "units": "C"
+        },
+        "precipitation_type": {
+            "value": "rain"
+        },
+        "precipitation_probability": {
+            "value": 35,
+            "units": "%"
+        },
+        "feels_like": {
+            "value": 10.95,
+            "units": "C"
+        },
+        "sunrise": {
+            "value": "2020-10-25T05:51:01.680Z"
+        },
+        "sunset": {
+            "value": "2020-10-25T15:12:18.375Z"
+        },
+        "weather_code": {
+            "value": "drizzle"
+        },
+        "observation_time": {
+            "value": "2020-10-25T22:00:00.000Z"
+        }
+    },
+    {
+        "lat": 59.32932349999999,
+        "lon": 18.0685808,
+        "temp": {
+            "value": 10.95,
             "units": "C"
         },
         "precipitation_type": {
@@ -67,179 +136,145 @@
             "value": 50,
             "units": "%"
         },
+        "feels_like": {
+            "value": 10.95,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-21T05:41:14.650Z"
+            "value": "2020-10-25T05:51:01.680Z"
         },
         "sunset": {
-            "value": "2020-10-21T15:23:07.479Z"
+            "value": "2020-10-25T15:12:18.375Z"
         },
         "weather_code": {
             "value": "drizzle"
         },
         "observation_time": {
-            "value": "2020-10-21T22:00:00.000Z"
+            "value": "2020-10-25T23:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 10.08,
+            "value": 11.02,
             "units": "C"
         },
         "precipitation_type": {
             "value": "rain"
         },
         "precipitation_probability": {
-            "value": 75,
+            "value": 55,
             "units": "%"
         },
+        "feels_like": {
+            "value": 11.02,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-21T05:41:14.650Z"
+            "value": "2020-10-26T05:53:29.316Z"
         },
         "sunset": {
-            "value": "2020-10-21T15:23:07.479Z"
+            "value": "2020-10-26T15:09:38.867Z"
         },
         "weather_code": {
             "value": "drizzle"
         },
         "observation_time": {
-            "value": "2020-10-21T23:00:00.000Z"
+            "value": "2020-10-26T00:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 10.18,
+            "value": 11.04,
             "units": "C"
         },
         "precipitation_type": {
             "value": "rain"
         },
         "precipitation_probability": {
-            "value": 95,
+            "value": 65,
             "units": "%"
         },
+        "feels_like": {
+            "value": 11.04,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-22T05:43:40.849Z"
+            "value": "2020-10-26T05:53:29.316Z"
         },
         "sunset": {
-            "value": "2020-10-22T15:20:23.634Z"
+            "value": "2020-10-26T15:09:38.867Z"
         },
         "weather_code": {
-            "value": "rain_light"
+            "value": "drizzle"
         },
         "observation_time": {
-            "value": "2020-10-22T00:00:00.000Z"
+            "value": "2020-10-26T01:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 10.38,
+            "value": 11.11,
             "units": "C"
         },
         "precipitation_type": {
             "value": "rain"
         },
         "precipitation_probability": {
-            "value": 100,
+            "value": 70,
             "units": "%"
         },
+        "feels_like": {
+            "value": 11.11,
+            "units": "C"
+        },
         "sunrise": {
-            "value": "2020-10-22T05:43:40.849Z"
+            "value": "2020-10-26T05:53:29.316Z"
         },
         "sunset": {
-            "value": "2020-10-22T15:20:23.634Z"
+            "value": "2020-10-26T15:09:38.867Z"
         },
         "weather_code": {
             "value": "rain_light"
         },
         "observation_time": {
-            "value": "2020-10-22T01:00:00.000Z"
+            "value": "2020-10-26T02:00:00.000Z"
         }
     },
     {
         "lat": 59.32932349999999,
         "lon": 18.0685808,
         "temp": {
-            "value": 10.67,
+            "value": 11.11,
             "units": "C"
         },
         "precipitation_type": {
             "value": "rain"
         },
         "precipitation_probability": {
-            "value": 95,
+            "value": 70,
             "units": "%"
         },
-        "sunrise": {
-            "value": "2020-10-22T05:43:40.849Z"
-        },
-        "sunset": {
-            "value": "2020-10-22T15:20:23.634Z"
-        },
-        "weather_code": {
-            "value": "rain_light"
-        },
-        "observation_time": {
-            "value": "2020-10-22T02:00:00.000Z"
-        }
-    },
-    {
-        "lat": 59.32932349999999,
-        "lon": 18.0685808,
-        "temp": {
-            "value": 10.59,
+        "feels_like": {
+            "value": 11.11,
             "units": "C"
         },
-        "precipitation_type": {
-            "value": "rain"
-        },
-        "precipitation_probability": {
-            "value": 90,
-            "units": "%"
-        },
         "sunrise": {
-            "value": "2020-10-22T05:43:40.849Z"
+            "value": "2020-10-26T05:53:29.316Z"
         },
         "sunset": {
-            "value": "2020-10-22T15:20:23.634Z"
+            "value": "2020-10-26T15:09:38.867Z"
         },
         "weather_code": {
             "value": "rain_light"
         },
         "observation_time": {
-            "value": "2020-10-22T03:00:00.000Z"
-        }
-    },
-    {
-        "lat": 59.32932349999999,
-        "lon": 18.0685808,
-        "temp": {
-            "value": 10.59,
-            "units": "C"
-        },
-        "precipitation_type": {
-            "value": "rain"
-        },
-        "precipitation_probability": {
-            "value": 90,
-            "units": "%"
-        },
-        "sunrise": {
-            "value": "2020-10-22T05:43:40.849Z"
-        },
-        "sunset": {
-            "value": "2020-10-22T15:20:23.634Z"
-        },
-        "weather_code": {
-            "value": "rain_light"
-        },
-        "observation_time": {
-            "value": "2020-10-22T04:00:00.000Z"
+            "value": "2020-10-26T03:00:00.000Z"
         }
     }
 ]

@@ -23,6 +23,13 @@ export class WeatherService {
         // "t01n": "tstorm.svg"
     };
 
+    private queryParams = {
+        fields: "temp,feels_like,precipitation_type,precipitation_probability,sunrise,sunset,weather_code",
+        lat: "59.32932349999999",
+        lon: "18.0685808",
+        unit_system: "si"
+    };
+
     constructor(
         private httpClient: HttpClient
     ) { }
@@ -41,10 +48,15 @@ export class WeatherService {
         const startTime = startTimeDate.toISOString();
         const endTime = endTimeDate.toISOString();
 
-        const url = environment.production ?
-            `${environment.localClimacellApiUrl}?lat=59.32932349999999&lon=18.0685808&unit_system=si&fields=temp,precipitation_type,precipitation_probability,sunrise,sunset,weather_code&start_time=${startTime}&end_time=${endTime}` : environment.localClimacellApiUrl;
+        const url = environment.localClimacellApiUrl;
+        const queryParams = {
+            ...this.queryParams,
+            start_time: startTime,
+            end_time: endTime
+        };
 
-        return this.httpClient.get<ClimacellApiResponseData[]>(url);
+
+        return this.httpClient.get<ClimacellApiResponseData[]>(url, { params: queryParams });
     }
 
     public getTimeForSunClimacell(sunDateObj: Date): SunTimesDataContent {

@@ -1,5 +1,4 @@
-<div class="background top" [ngStyle]="{'background-image': this.getBackgroundTop()}"
-    [ngClass]="{  'hide' : showFirst}">
+<div class="background top" [ngStyle]="{'background-image': this.getBackgroundTop()}" [ngClass]="{  'hide' : showFirst}">
 </div>
 <div class="background bottom" [ngStyle]="{'background-image': this.getBackgroundBottom() }">
 </div>
@@ -24,9 +23,8 @@
             <div class="title">
                 <span class="material-icons transportation-icon">
                     directions_bus
-                </span>
-                Tessinparken Linje 54 <p class="latest-update">(Latest update:
-                    {{this.transportationTimes.bus?.latestUpdate}})
+                </span> Tessinparken Linje 54
+                <p class="latest-update">(Latest update: {{this.transportationTimes.bus?.latestUpdate}})
                 </p>
             </div>
             <div>
@@ -38,9 +36,9 @@
             <div class="title">
                 <span class="material-icons transportation-icon">
                     directions_subway
-                </span>
-                Gärdet Linje 13 <p class="latest-update">(Latest update:
-                    {{this.transportationTimes.metro?.latestUpdate}})</p>
+                </span> Gärdet Linje 13
+                <p class="latest-update">(Latest update: {{this.transportationTimes.metro?.latestUpdate}})
+                </p>
             </div>
             <div>
                 <div class="board-times" [innerHTML]=this.transportationTimes.metro?.boardTime>
@@ -77,6 +75,9 @@
                 </div>
                 <div>
                     {{w.temperature}}
+                </div>
+                <div style="font-size: 80%;">
+                    {{w.feelsLike}}
                 </div>
             </div>
         </div>

@@ -35,7 +35,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   };
   public dateTime: { time: string, date: string };
   public sunTime: SunTimes;
-  public weatherInfo: { time: string; temperature: string, icon: string }[] = [];
+  public weatherInfo: { time: string; temperature: string, feelsLike?: string, icon: string }[] = [];
   public errorSlObj = { message: "", color: "red", counter: 0 };
   public errorWeatherObj = { message: "", color: "red" };
   public quote = { quoteStr: null, author: null };
@@ -49,7 +49,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public weatherApp = WeatherApp.CLIMACELL;
 
   private subscriptions: Subscription[] = [];
-  private application = ["SL", "Weatherbit"];
+  private application = ["SL", "Weatherbit", "Climacell"];
   private readonly images = [
     "https://vistapointe.net/images/stockholm-7.jpg",
     "https://cdn.pixabay.com/photo/2015/07/16/23/05/stockholm-848255_1280.jpg",
@@ -206,14 +206,19 @@ export class SlInfoComponent implements OnInit, OnDestroy {
         for (let i = 0; i < res.length; i++) {
           const data = res[i];
 
+          const temp = Math.round(data.temp.value);
+          const feelsLikeTemp = Math.round(data.feels_like.value);
+          const feelsLike = feelsLikeTemp !== temp ? `(${feelsLikeTemp} °C)` : null;
+
           this.weatherInfo[i] = {
             time: new Date(data.observation_time.value).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
-            temperature: `${Math.round(data.temp.value)} °C`,
+            temperature: `${temp} °C`,
+            feelsLike,
             icon: data.weather_code.value
           };
         }
       },
-        err => this.handleError(Application.WEATHERBIT, err));
+        err => this.handleError(Application.CLIMACELL, err));
     }
 
     return sub;

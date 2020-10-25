@@ -11,5 +11,7 @@ export interface ClimacellApiResponseData {
 
     temp: { value: number, units: string };
 
+    feels_like: { value: number, units: string };
+
     weather_code: { value: string };
 }
