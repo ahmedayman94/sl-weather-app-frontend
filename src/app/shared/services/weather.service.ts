@@ -65,4 +65,21 @@ export class WeatherService {
             time: sunDateObj.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
         };
     }
+
+    public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr: string, sunriseTimeStr: string, sunsetTimeStr: string): string {
+        if (weatherCode !== "partly_cloudy") {
+            return weatherCode;
+        }
+
+        const observationHours = new Date(observationTimeStr).getUTCHours();
+        const sunsetHour = new Date(sunsetTimeStr).getUTCHours();
+        const sunriseHour = new Date(sunriseTimeStr).getUTCHours();
+
+        // Case of climacell returning only partly_cloudy, we need to define day or night since we don't have an image for just cloudy
+        if (observationHours > sunriseHour && observationHours < sunsetHour) {
+            return weatherCode + "_day";
+        } else {
+            return weatherCode + "_night";
+        }
+    }
 }

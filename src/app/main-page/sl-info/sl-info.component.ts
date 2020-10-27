@@ -214,7 +214,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
             time: new Date(data.observation_time.value).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
             temperature: `${temp} °C`,
             feelsLike,
-            icon: data.weather_code.value
+            icon: this.weatherService.adjustWeatherCodeClimacell(data.weather_code.value, data.observation_time.value, data.sunrise.value, data.sunset.value)
           };
         }
       },
