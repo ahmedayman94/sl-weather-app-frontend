@@ -67,15 +67,14 @@ export class WeatherService {
     }
 
     public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr: string, sunriseTimeStr: string, sunsetTimeStr: string): string {
-        if (weatherCode !== "partly_cloudy") {
+        if (weatherCode !== "partly_cloudy" && weatherCode !== "mostly_clear")
             return weatherCode;
-        }
 
         const observationHours = new Date(observationTimeStr).getUTCHours();
         const sunsetHour = new Date(sunsetTimeStr).getUTCHours();
         const sunriseHour = new Date(sunriseTimeStr).getUTCHours();
 
-        // Case of climacell returning only partly_cloudy, we need to define day or night since we don't have an image for just cloudy
+        // Case of climacell returning only partly_cloudy, and mostly_clear we need to define day or night since we don't have an image for just cloudy
         if (observationHours > sunriseHour && observationHours < sunsetHour) {
             return weatherCode + "_day";
         } else {
