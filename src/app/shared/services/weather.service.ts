@@ -67,7 +67,7 @@ export class WeatherService {
     }
 
     public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr: string, sunriseTimeStr: string, sunsetTimeStr: string): string {
-        if (weatherCode !== "partly_cloudy" && weatherCode !== "mostly_clear")
+        if (weatherCode !== "partly_cloudy" && weatherCode !== "mostly_clear" && weatherCode !== "clear")
             return weatherCode;
 
         const observationHours = new Date(observationTimeStr).getUTCHours();
