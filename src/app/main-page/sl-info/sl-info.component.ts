@@ -36,9 +36,11 @@ export class SlInfoComponent implements OnInit, OnDestroy {
   public dateTime: { time: string, date: string };
   public sunTime: SunTimes;
   public weatherInfo: { time: string; temperature: string, feelsLike?: string, icon: string }[] = [];
+  public weatherDaily: { day: string, min: string, max: string }[] = [];
   public errorSlObj = { message: "", color: "red", counter: 0 };
   public errorWeatherObj = { message: "", color: "red" };
   public quote = { quoteStr: null, author: null };
+
   public showFirst = true;
   public urlTop: string;
   public urlBottom: string;
@@ -82,7 +84,8 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     this.subscriptions = [
       this.getClockSub(),
       this.getBackgroundImageSub(),
-      this.getWeatherApiSub(),
+      this.getWeatherHourlyApiSub(),
+      this.getWeatherDailyApiSub(),
       this.getSlApiSub(),
       this.getQuoteApiSub()
     ];
@@ -169,7 +172,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       );
   }
 
-  private getWeatherApiSub(): Subscription {
+  private getWeatherHourlyApiSub(): Subscription {
     let sub: Subscription;
 
     if (this.weatherApp === WeatherApp.WEATHERBIT) {
@@ -190,7 +193,7 @@ export class SlInfoComponent implements OnInit, OnDestroy {
         err => this.handleError(Application.WEATHERBIT, err));
     } else {
       sub = this.clockService.hourlyMark$.pipe(
-        switchMap(() => this.weatherService.fetchWeatherClimacell()),
+        switchMap(() => this.weatherService.fetchHourlyWeatherClimacell()),
         retry(3)
       ).subscribe(res => {
         const sunDateObjs = {
@@ -222,7 +225,18 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     }
 
     return sub;
+  }
 
+  private getWeatherDailyApiSub(): Subscription {
+    return this.weatherService.fetchDailyWeatherClimacell()
+      .subscribe(res => {
+        this.weatherDaily = res.map(w => {
+          return {
+            ...w,
+            day: this.clockService.getDayOfWeek(w.day),
+          };
+        });
+      });
   }
 
   private getQuoteApiSub(): Subscription {

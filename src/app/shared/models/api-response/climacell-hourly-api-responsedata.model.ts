@@ -1,4 +1,4 @@
-export interface ClimacellApiResponseData {
+export interface ClimacellHourlyApResponseData {
     observation_time: { value: string };
 
     precipitation_probability: { value: number, units: string };

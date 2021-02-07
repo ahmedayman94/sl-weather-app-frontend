@@ -1,4 +1,4 @@
-import { SLResponseData } from "./sl-responsedata.model";
+import { SLResponseData } from "../sl-responsedata.model";
 export interface SLApiResponse {
     StatusCode: number;
 

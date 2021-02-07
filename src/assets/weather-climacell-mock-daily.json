@@ -1,0 +1,184 @@
+[
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-08T08:00:00Z",
+                "min": {
+                    "value": -10.12,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-08T12:00:00Z",
+                "max": {
+                    "value": -4.68,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "cloudy"
+        },
+        "observation_time": {
+            "value": "2021-02-08"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-10T07:00:00Z",
+                "min": {
+                    "value": -9.6,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-09T12:00:00Z",
+                "max": {
+                    "value": -5.13,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "cloudy"
+        },
+        "observation_time": {
+            "value": "2021-02-09"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-11T00:00:00Z",
+                "min": {
+                    "value": -10.92,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-10T12:00:00Z",
+                "max": {
+                    "value": -6.32,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "cloudy"
+        },
+        "observation_time": {
+            "value": "2021-02-10"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-12T06:00:00Z",
+                "min": {
+                    "value": -11.97,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-11T13:00:00Z",
+                "max": {
+                    "value": -5.73,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "fog_light"
+        },
+        "observation_time": {
+            "value": "2021-02-11"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-12T09:00:00Z",
+                "min": {
+                    "value": -11.21,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-12T15:00:00Z",
+                "max": {
+                    "value": -7.44,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "clear"
+        },
+        "observation_time": {
+            "value": "2021-02-12"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-14T03:00:00Z",
+                "min": {
+                    "value": -11.37,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-13T12:00:00Z",
+                "max": {
+                    "value": -3.67,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "cloudy"
+        },
+        "observation_time": {
+            "value": "2021-02-13"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    },
+    {
+        "temp": [
+            {
+                "observation_time": "2021-02-14T21:00:00Z",
+                "min": {
+                    "value": -12.17,
+                    "units": "C"
+                }
+            },
+            {
+                "observation_time": "2021-02-15T06:00:00Z",
+                "max": {
+                    "value": -9.61,
+                    "units": "C"
+                }
+            }
+        ],
+        "weather_code": {
+            "value": "cloudy"
+        },
+        "observation_time": {
+            "value": "2021-02-14"
+        },
+        "lat": 59.32932349999999,
+        "lon": 18.0685808
+    }
+]

@@ -1,4 +1,4 @@
-import { WeatherbitResponseData } from "./weatherbit-responsedata.model";
+import { WeatherbitResponseData } from "../weatherbit-responsedata.model";
 
 export interface WeatherbitApiResponse {
     city_name: string;

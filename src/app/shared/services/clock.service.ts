@@ -41,5 +41,7 @@ export class ClockService {
             );
     }
 
-
+    public getDayOfWeek(dayNumber: number): string {
+        return this.dayOfWeek[dayNumber];
+    }
 }

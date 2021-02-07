@@ -52,7 +52,6 @@
     text-align: right;
 }
 
-
 /**
 * Date & Time now
 **/
@@ -70,7 +69,6 @@
     font-size: 95px;
     margin: 0px;
 }
-
 
 /**
 * SL Information
@@ -95,8 +93,7 @@
     font-size: 42px !important;
 }
 
-#bus,
-#metro {
+#bus, #metro {
     margin: 0px 25px !important;
 }
 
@@ -117,7 +114,6 @@
     font-size: 150%;
 }
 
-
 /**
 * Quote 
 **/
@@ -125,7 +121,7 @@
 #quote {
     font-style: italic;
     padding: 0px 150px;
-    font-size: 32px;
+    font-size: 28px;
     text-align: center;
     font-weight: bold;
 }
@@ -135,7 +131,6 @@
     padding: 0px;
     margin: 20px 0px 0px 0px;
 }
-
 
 /**
 * Weather and sunrise/sunset times
@@ -159,11 +154,36 @@
 #weather-list {
     display: flex;
     flex-direction: row;
-    width: 70%;
+    width: 60%;
     justify-content: space-around;
 }
 
 .weather-list-item {
     width: 100%;
     text-align: center;
+}
+
+#weather-week-list {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    font-size: 90%;
+    padding: 20px;
+}
+
+.weather-day-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.weather-day-item>* {
+    width: 33%;
+}
+
+.weather-day-item>* {
+    margin: auto;
+}
+
+.flex-end {
+    align-self: flex-end;
 }

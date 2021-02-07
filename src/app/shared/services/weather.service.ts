@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { WeatherbitApiResponse } from "src/app/shared/models/weatherbit-api-response.model";
-import { ClimacellApiResponseData } from "src/app/shared/models/climacell-api-responsedata.model";
+import { WeatherbitApiResponse } from "src/app/shared/models/api-response/weatherbit-api-response.model";
+import { ClimacellHourlyApResponseData } from "src/app/shared/models/api-response/climacell-hourly-api-responsedata.model";
 import { SunTimesDataContent } from '../models/sun-time.model';
+import { ClimacellDailyApResponseData } from '../models/api-response/climacell-daily-api-responsedata.model';
+import { map } from 'rxjs/operators';
+import { WeatherWeekForecast } from '../models/weather-week-forecast.model';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
@@ -42,21 +45,54 @@ export class WeatherService {
         return this.httpClient.get<WeatherbitApiResponse>(url);
     }
 
-    public fetchWeatherClimacell(): Observable<ClimacellApiResponseData[]> {
+    public fetchHourlyWeatherClimacell(): Observable<ClimacellHourlyApResponseData[]> {
         const startTimeDate = new Date();
         const endTimeDate = new Date(startTimeDate.getTime() + 60 * 60 * 1000 * 8);
         const startTime = startTimeDate.toISOString();
         const endTime = endTimeDate.toISOString();
 
-        const url = environment.localClimacellApiUrl;
+        const url = environment.localClimacellHourlyApiUrl;
         const queryParams = {
             ...this.queryParams,
             start_time: startTime,
             end_time: endTime
         };
 
+        return this.httpClient.get<ClimacellHourlyApResponseData[]>(url, { params: queryParams });
+    }
 
-        return this.httpClient.get<ClimacellApiResponseData[]>(url, { params: queryParams });
+    public fetchDailyWeatherClimacell(): Observable<WeatherWeekForecast[]> {
+        const now = new Date();
+        const startTimeMilliseconds = new Date().setDate(now.getDate() + 1);
+        const endTimeMilliseconds = new Date().setDate(now.getDate() + 6);
+
+        const startDate = new Date(startTimeMilliseconds).toISOString();
+        const endDate = new Date(endTimeMilliseconds).toISOString();
+
+        const url = environment.localClimacellDailyApiUrl;
+        const queryParams = {
+            ...this.queryParams,
+            fields: "temp,sunrise,sunset,weather_code",
+            start_time: startDate,
+            end_time: endDate
+        };
+        debugger;
+        return this.httpClient.get<ClimacellDailyApResponseData[]>(url, { params: queryParams })
+            .pipe(map(res => {
+                const responseData: WeatherWeekForecast[] = res.map(data => {
+                    const minTemp = data.temp.find(t => t.min != null);
+                    const maxTemp = data.temp.find(t => t.max != null);
+
+                    return {
+                        day: new Date(data.observation_time.value).getDay(),
+                        min: `${Math.round(minTemp.min.value)} °C`,
+                        max: `${Math.round(maxTemp.max.value)} °C`,
+                        icon: this.adjustWeatherCodeClimacell(data.weather_code.value)
+                    };
+                });
+
+                return responseData;
+            }));
     }
 
     public getTimeForSunClimacell(sunDateObj: Date): SunTimesDataContent {
@@ -66,9 +102,11 @@ export class WeatherService {
         };
     }
 
-    public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr: string, sunriseTimeStr: string, sunsetTimeStr: string): string {
+    public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr?: string, sunriseTimeStr?: string, sunsetTimeStr?: string): string {
         if (weatherCode !== "partly_cloudy" && weatherCode !== "mostly_clear" && weatherCode !== "clear")
             return weatherCode;
+
+        if (observationTimeStr == null) return `${weatherCode}_day`;
 
         const observationHours = new Date(observationTimeStr).getUTCHours();
         const sunsetHour = new Date(sunsetTimeStr).getUTCHours();

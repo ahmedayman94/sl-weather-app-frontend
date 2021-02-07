@@ -1,4 +1,5 @@
-<div class="background top" [ngStyle]="{'background-image': this.getBackgroundTop()}" [ngClass]="{  'hide' : showFirst}">
+<div class="background top" [ngStyle]="{'background-image': this.getBackgroundTop()}"
+    [ngClass]="{  'hide' : showFirst}">
 </div>
 <div class="background bottom" [ngStyle]="{'background-image': this.getBackgroundBottom() }">
 </div>
@@ -51,7 +52,7 @@
         <p id="quote-author">– {{this.quote?.author}}</p>
     </div>
     <div class="container-weather">
-        <div id="sun-times" *ngIf="sunTime">
+        <div id="sun-times" class="flex-end" *ngIf="sunTime">
             <div>
                 {{sunTime.sunrise.time}}
             </div>
@@ -65,7 +66,7 @@
                 <img style="width: 50px; height: 50px" [src]="sunImages.sunset">
             </div>
         </div>
-        <div id="weather-list">
+        <div id="weather-list" class="flex-end">
             <div class="weather-list-item" *ngFor="let w of weatherInfo">
                 <div>
                     {{w.time}}
@@ -81,7 +82,21 @@
                 </div>
             </div>
         </div>
-        <div id="sun-times">
+        <div id="weather-week-list">
+            <div class="weather-day-item" *ngFor="let weatherDay of weatherDaily">
+                <div>
+                    {{weatherDay.day}}
+                </div>
+                <div>
+                    {{weatherDay.max}}
+                </div>
+                <div>
+                    {{weatherDay.min}}
+                </div>
+                <div>
+                    <img style="width: 30px; height: 30px" [src]="getImageByCode(weatherDay.icon, weatherApp)">
+                </div>
+            </div>
 
         </div>
     </div>
