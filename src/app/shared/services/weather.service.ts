@@ -76,7 +76,7 @@ export class WeatherService {
             start_time: startDate,
             end_time: endDate
         };
-        debugger;
+
         return this.httpClient.get<ClimacellDailyApResponseData[]>(url, { params: queryParams })
             .pipe(map(res => {
                 const responseData: WeatherWeekForecast[] = res.map(data => {
