@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SLService } from 'src/app/shared/services/sl.service';
-import { timer, merge, Observable, Subscription } from 'rxjs';
+import { timer, merge, Observable, Subscription, forkJoin } from 'rxjs';
 import { switchMap, retryWhen, mergeMap, map, retry, skip } from 'rxjs/operators';
 import { WeatherService } from 'src/app/shared/services/weather.service';
 import { ClockService } from 'src/app/shared/services/clock.service';
@@ -149,24 +149,21 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private getSlApiSub(): Subscription {
     return this.clockService.minuteMark$.pipe(
-      switchMap(() => merge(this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA))),
+      switchMap(() => forkJoin([this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA)])),
       retryWhen(this.retryStrategy())
     )
       .subscribe(
-        res => {
+        ([busRes, metroRes]) => {
           this.errorSlObj.counter = 0; // Reset error counter
           this.errorSlObj.message = "";
-          if (res.ResponseData.Metros.length > 0) {
-            this.transportationTimes.metro = {
-              boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Metros),
-              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
-            };
-          } else {
-            this.transportationTimes.bus = {
-              boardTime: this.slService.getStrListOfNextArrivals(res.ResponseData.Buses),
-              latestUpdate: (new Date(res.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
-            };
-          }
+          this.transportationTimes.metro = {
+            boardTime: this.slService.getStrListOfNextArrivals(metroRes.ResponseData.Metros),
+            latestUpdate: (new Date(metroRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+          };
+          this.transportationTimes.bus = {
+            boardTime: this.slService.getStrListOfNextArrivals(busRes.ResponseData.Buses),
+            latestUpdate: (new Date(busRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+          };
         },
         err => console.error(err)
       );
