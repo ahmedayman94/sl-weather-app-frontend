@@ -1,1 +1,49 @@
-<p>weather works!</p>
+<div class="container-weather">
+    <div id="sun-times" class="flex-end" *ngIf="sunTimes$ | async as sunTimes">
+        <div>
+            {{sunTimes.sunrise.time}}
+        </div>
+        <div>
+            <img style="width: 50px; height: 50px" [src]="sunImages.sunrise">
+        </div>
+        <div>
+            {{sunTimes.sunset.time}}
+        </div>
+        <div>
+            <img style="width: 50px; height: 50px" [src]="sunImages.sunset">
+        </div>
+    </div>
+    <div id="weather-list" class="flex-end">
+        <div class="weather-list-item" *ngFor="let w of weatherHourlyInfo$ | async">
+            <div>
+                {{w.time}}
+            </div>
+            <div>
+                <img style="width: 50px; height: 50px" [src]="getImageByCode(w.icon, weatherApp)">
+            </div>
+            <div>
+                {{w.temperature}}
+            </div>
+            <div style="font-size: 80%;">
+                {{w.feelsLike}}
+            </div>
+        </div>
+    </div>
+    <div id="weather-week-list" class="flex-end">
+        <div class="weather-day-item" *ngFor="let weatherDay of weatherDailyInfo$ | async">
+            <div>
+                {{weatherDay.day}}
+            </div>
+            <div>
+                {{weatherDay.max}}
+            </div>
+            <div>
+                {{weatherDay.min}}
+            </div>
+            <div>
+                <img style="width: 30px; height: 30px" [src]="getImageByCode(weatherDay.icon, weatherApp)">
+            </div>
+        </div>
+
+    </div>
+</div>

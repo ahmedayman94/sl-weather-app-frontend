@@ -4,12 +4,14 @@
     <div class="container-error" [ngStyle]="{'color': this.errorSlObj.color}">
         {{ this.errorSlObj.message }}
     </div>
-    <div class="container-error" [ngStyle]="{'color': this.errorWeatherObj.color}">
-        {{ this.errorWeatherObj.message }}
-    </div>
+    <ng-container *ngIf="errorWeather$ | async as errorWeather">
+        <div class="container-error" [ngStyle]="{'color': errorWeather.color}">
+            {{ errorWeather.message }}
+        </div>
+    </ng-container>
 
     <app-date-time></app-date-time>
-
+    <!-- 
     <div class="container-schedule">
         <div class="schedule">
             <div class="title">
@@ -37,57 +39,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <app-quote></app-quote>
 
-    <div class="container-weather">
-        <div id="sun-times" class="flex-end" *ngIf="sunTime">
-            <div>
-                {{sunTime.sunrise.time}}
-            </div>
-            <div>
-                <img style="width: 50px; height: 50px" [src]="sunImages.sunrise">
-            </div>
-            <div>
-                {{sunTime.sunset.time}}
-            </div>
-            <div>
-                <img style="width: 50px; height: 50px" [src]="sunImages.sunset">
-            </div>
-        </div>
-        <div id="weather-list" class="flex-end">
-            <div class="weather-list-item" *ngFor="let w of weatherInfo">
-                <div>
-                    {{w.time}}
-                </div>
-                <div>
-                    <img style="width: 50px; height: 50px" [src]="getImageByCode(w.icon, weatherApp)">
-                </div>
-                <div>
-                    {{w.temperature}}
-                </div>
-                <div style="font-size: 80%;">
-                    {{w.feelsLike}}
-                </div>
-            </div>
-        </div>
-        <div id="weather-week-list" class="flex-end">
-            <div class="weather-day-item" *ngFor="let weatherDay of weatherDaily">
-                <div>
-                    {{weatherDay.day}}
-                </div>
-                <div>
-                    {{weatherDay.max}}
-                </div>
-                <div>
-                    {{weatherDay.min}}
-                </div>
-                <div>
-                    <img style="width: 30px; height: 30px" [src]="getImageByCode(weatherDay.icon, weatherApp)">
-                </div>
-            </div>
-
-        </div>
-    </div>
+    <app-weather (onWeatherError)="onWeatherError($event)"></app-weather>
 </div>
