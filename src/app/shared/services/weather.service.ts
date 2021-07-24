@@ -61,11 +61,11 @@ export class WeatherService {
         const endTime = endTimeDate.toISOString();
 
         const url = environment.localClimacellHourlyApiUrl;
-        const queryParams = {
+        const queryParams = environment.production ? {
             ...this.queryParams,
             start_time: startTime,
             end_time: endTime
-        };
+        } : null;
 
         return this.httpClient.get<ClimacellHourlyApResponseData[]>(url, { params: queryParams });
     }

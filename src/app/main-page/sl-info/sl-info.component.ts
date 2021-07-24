@@ -69,7 +69,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions = [
-      this.getClockSub(),
       this.getBackgroundImageSub(),
       this.getWeatherHourlyApiSub(),
       this.getWeatherDailyApiSub(),
@@ -103,13 +102,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     }
 
     return imgLink;
-  }
-
-  private getClockSub(): Subscription {
-    return this.clockService.getDateAndTimeObs()
-      .subscribe(dateAndTime => {
-        this.dateTime = { date: dateAndTime.date, time: dateAndTime.time };
-      });
   }
 
   private getBackgroundImageSub(): Subscription {

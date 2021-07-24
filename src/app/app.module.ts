@@ -7,12 +7,14 @@ import { SlInfoComponent } from './main-page/sl-info/sl-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './mat.module';
 import { QuoteComponent } from './components/quote/quote.component';
+import { DateTimeComponent } from './components/date-time/date-time.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SlInfoComponent,
-    QuoteComponent
+    QuoteComponent,
+    DateTimeComponent
   ],
   imports: [
     BrowserModule,

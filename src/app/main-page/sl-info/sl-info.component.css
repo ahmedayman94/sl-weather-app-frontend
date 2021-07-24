@@ -53,24 +53,6 @@
 }
 
 /**
-* Date & Time now
-**/
-
-.container-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#clock-now {
-    font-family: arial, helvetica, sans-serif;
-    font-weight: normal;
-    font-size: 95px;
-    margin: 0px;
-}
-
-/**
 * SL Information
 **/
 

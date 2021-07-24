@@ -11,14 +11,7 @@
     <div class="container-error" [ngStyle]="{'color': this.errorWeatherObj.color}">
         {{ this.errorWeatherObj.message }}
     </div>
-    <div class="container-header">
-        <div>
-            {{this.dateTime?.date}}
-        </div>
-        <div id="clock-now">
-            {{this.dateTime?.time}}
-        </div>
-    </div>
+    <app-date-time></app-date-time>
     <div class="container-schedule">
         <div class="schedule">
             <div class="title">
