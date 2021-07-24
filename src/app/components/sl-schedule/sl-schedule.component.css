@@ -1,7 +1,5 @@
-.container-schedule {
+.main {
     display: flex;
-    justify-content: center;
-    text-align: center;
 }
 
 .schedule {
@@ -9,6 +7,8 @@
     flex-direction: column;
     margin: 0px 100px;
     width: 50%;
+    align-items: center;
+    text-align: center;
 }
 
 .title {

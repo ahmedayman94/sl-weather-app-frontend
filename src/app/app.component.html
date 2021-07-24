@@ -10,11 +10,19 @@
         </div>
     </ng-container>
 
-    <app-date-time></app-date-time>
+    <div class="container-header">
+        <app-date-time></app-date-time>
+    </div>
 
-    <app-sl-schedule></app-sl-schedule>
+    <div class="container-schedule">
+        <app-sl-schedule></app-sl-schedule>
+    </div>
 
-    <app-quote></app-quote>
+    <div class="container-quote">
+        <app-quote></app-quote>
+    </div>
 
-    <app-weather (onWeatherError)="onWeatherError($event)"></app-weather>
+    <div class="container-weather">
+        <app-weather (onWeatherError)="onWeatherError($event)"></app-weather>
+    </div>
 </div>

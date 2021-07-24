@@ -1,10 +1,9 @@
-.container-weather {
-    margin-top: auto;
+.main {
     display: flex;
     flex-direction: row;
 }
 
-.container-weather>* {
+.main>* {
     text-align: center;
     font-size: 32px;
 }
