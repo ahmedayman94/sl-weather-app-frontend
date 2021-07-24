@@ -8,8 +8,8 @@ import { ErrorModel } from './shared/models/error.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public errorSlObj$: Observable<ErrorModel>;// = { message: "", color: "red", counter: 0 };
-  public errorSlObj = { message: "", color: "red", counter: 0 };
+  private readonly _errorSlSubject$ = new BehaviorSubject<ErrorModel>({ message: null, color: null });
+  public errorSl$ = this._errorSlSubject$.asObservable();
 
   public _errorWeatherSubject$ = new BehaviorSubject<ErrorModel>(null);
   public errorWeather$ = this._errorWeatherSubject$.asObservable();
@@ -21,5 +21,9 @@ export class AppComponent {
 
   public onWeatherError(err: any): void {
     this._errorWeatherSubject$.next({ message: err, color: "red" });
+  }
+
+  public onSlError(err: ErrorModel): void {
+    this._errorSlSubject$.next(err);
   }
 }

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { forkJoin, Observable, timer } from 'rxjs';
-import { map, mergeMap, retryWhen, share, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, retryWhen, share, switchMap, tap } from 'rxjs/operators';
+import { ErrorModel } from 'src/app/shared/models/error.model';
 import { Application } from 'src/app/shared/models/misc';
 import { TransportationTimes } from 'src/app/shared/models/transportation-times.model';
 import { ClockService } from 'src/app/shared/services/clock.service';
@@ -17,12 +18,13 @@ enum Stations {
   styleUrls: ['./sl-schedule.component.css']
 })
 export class SlScheduleComponent implements OnInit {
-  errorSlObj: any;
+  @Output('onSlError') onError = new EventEmitter<ErrorModel>();
 
   public transportationTimes$: Observable<TransportationTimes>;
 
   private application = ["SL", "Weatherbit", "Climacell"];
 
+  private _errorSlObj: ErrorModel = { message: null, color: null, counter: 0 };
 
   constructor(private clockService: ClockService, private slService: SLService) { }
 
@@ -31,6 +33,11 @@ export class SlScheduleComponent implements OnInit {
 
     this.transportationTimes$ = minuteMark$.pipe(
       switchMap(() => forkJoin([this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA)])),
+      tap(() => {
+        // Reset error counter
+        this._errorSlObj = { message: null, color: null, counter: 0 };
+        this.onError.next(this._errorSlObj);
+      }),
       map(([busRes, metroRes]) =>
       ({
         bus: {
@@ -51,15 +58,15 @@ export class SlScheduleComponent implements OnInit {
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
     const maxSlowerRetryTimes = 15, // Slower retry that runs every 10 minutes
       maxRetryTimes = 5,
-      delayTime = 15000,
-      slowerDelayTime = 60000 * 10; // Delay time of 10 minutes
+      delayTime = 0,
+      slowerDelayTime = 0 * 10; // Delay time of 10 minutes
 
     return (attempts: Observable<any>) => {
       return attempts.pipe(
         mergeMap((errors, _) => {
-          this.errorSlObj.counter += 1;
-          if (this.errorSlObj.counter > maxRetryTimes) {
-            if (this.errorSlObj.counter > maxSlowerRetryTimes) {
+          this._errorSlObj.counter += 1;
+          if (this._errorSlObj.counter > maxRetryTimes) {
+            if (this._errorSlObj.counter > maxSlowerRetryTimes) {
               this.handleError(Application.SL, errors);
             } else {
               this.handleError(Application.SL, errors, slowerDelayTime);
@@ -77,11 +84,14 @@ export class SlScheduleComponent implements OnInit {
     if (timeDelayMs) {
       const now = new Date();
       const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
-      this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
-      this.errorSlObj.color = "orange";
+      this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
+      this._errorSlObj.color = "orange";
+      this.onError.next(this._errorSlObj);
     } else {
-      this.errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
-      this.errorSlObj.color = "red";
+      this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
+      this._errorSlObj.color = "red";
+      debugger;
+      this.onError.next(this._errorSlObj);
       throw new Error(errorMessage);
     }
   }
