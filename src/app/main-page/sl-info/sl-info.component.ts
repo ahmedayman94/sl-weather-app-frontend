@@ -69,7 +69,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-
   public getImageByCode(code: string, weatherApp: WeatherApp): string {
     let imgLink: string;
     if (weatherApp === WeatherApp.WEATHERBIT) {

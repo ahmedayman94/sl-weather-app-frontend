@@ -9,6 +9,7 @@ import { MaterialModule } from './mat.module';
 import { QuoteComponent } from './components/quote/quote.component';
 import { DateTimeComponent } from './components/date-time/date-time.component';
 import { BackgroundWallpaperComponent } from './components/background-wallpaper/background-wallpaper.component';
+import { WeatherComponent } from './components/weather/weather.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { BackgroundWallpaperComponent } from './components/background-wallpaper/
     SlInfoComponent,
     QuoteComponent,
     DateTimeComponent,
-    BackgroundWallpaperComponent
+    BackgroundWallpaperComponent,
+    WeatherComponent
   ],
   imports: [
     BrowserModule,
