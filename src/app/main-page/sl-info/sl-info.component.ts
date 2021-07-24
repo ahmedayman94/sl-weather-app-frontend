@@ -34,17 +34,11 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     bus: { boardTime: "", latestUpdate: "" },
     metro: { boardTime: "", latestUpdate: "" }
   };
-  public dateTime: { time: string, date: string };
   public sunTime: SunTimes;
   public weatherInfo: { time: string; temperature: string, feelsLike?: string, icon: string }[] = [];
   public weatherDaily: { day: string, min: string, max: string }[] = [];
   public errorSlObj = { message: "", color: "red", counter: 0 };
   public errorWeatherObj = { message: "", color: "red" };
-  public quote = { quoteStr: null, author: null };
-
-  public showFirst = true;
-  public urlTop: string;
-  public urlBottom: string;
 
   /**
    * Choose the weather api
@@ -53,23 +47,18 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private application = ["SL", "Weatherbit", "Climacell"];
-  private readonly images: string[];
   public readonly sunImages;
 
   constructor(
     private slService: SLService,
     private weatherService: WeatherService,
     private clockService: ClockService,
-    private quoteService: QuoteService,
-    private generalService: GeneralService,
   ) {
     this.sunImages = this.weatherService.sunImages;
-    this.images = this.generalService.wallpaperImages;
   }
 
   ngOnInit() {
     this.subscriptions = [
-      this.getBackgroundImageSub(),
       this.getWeatherHourlyApiSub(),
       this.getWeatherDailyApiSub(),
       this.getSlApiSub(),
@@ -80,15 +69,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  public getBackgroundTop(): string {
-    const url = this.urlTop ?? '';
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
-  }
-
-  public getBackgroundBottom(): string {
-    const url = this.urlBottom ?? '';
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
-  }
 
   public getImageByCode(code: string, weatherApp: WeatherApp): string {
     let imgLink: string;
@@ -102,27 +82,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
     }
 
     return imgLink;
-  }
-
-  private getBackgroundImageSub(): Subscription {
-    return this.clockService.hourlyMark$
-      .subscribe(() => {
-        const url = this.images[Math.round(Math.random() * (this.images.length - 1))];
-
-        // We do this in order to wait for the image to load before displaying it
-        const image: HTMLImageElement = document.createElement('img');
-        let self = this;
-        image.addEventListener('load', function handleImageLoad() {
-          if (self.showFirst) {
-            self.urlTop = url;
-          } else {
-            self.urlBottom = url;
-          }
-          self.showFirst = !self.showFirst;
-          image.removeEventListener('load', handleImageLoad);
-        });
-        image.src = url; // begin loading image (to browser cache)
-      });
   }
 
   private getSlApiSub(): Subscription {

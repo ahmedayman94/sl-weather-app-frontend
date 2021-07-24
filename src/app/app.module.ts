@@ -8,13 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './mat.module';
 import { QuoteComponent } from './components/quote/quote.component';
 import { DateTimeComponent } from './components/date-time/date-time.component';
+import { BackgroundWallpaperComponent } from './components/background-wallpaper/background-wallpaper.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SlInfoComponent,
     QuoteComponent,
-    DateTimeComponent
+    DateTimeComponent,
+    BackgroundWallpaperComponent
   ],
   imports: [
     BrowserModule,
