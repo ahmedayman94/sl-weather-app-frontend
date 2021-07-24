@@ -1,1 +1,20 @@
-<app-sl-info></app-sl-info>
+<app-background-wallpaper></app-background-wallpaper>
+
+<div class="container">
+    <div class="container-error" [ngStyle]="{'color': this.errorSlObj.color}">
+        {{ this.errorSlObj.message }}
+    </div>
+    <ng-container *ngIf="errorWeather$ | async as errorWeather">
+        <div class="container-error" [ngStyle]="{'color': errorWeather.color}">
+            {{ errorWeather.message }}
+        </div>
+    </ng-container>
+
+    <app-date-time></app-date-time>
+
+    <app-sl-schedule></app-sl-schedule>
+
+    <app-quote></app-quote>
+
+    <app-weather (onWeatherError)="onWeatherError($event)"></app-weather>
+</div>

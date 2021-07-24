@@ -1,0 +1,28 @@
+<div class="container-schedule" *ngIf="transportationTimes$ | async as transportationTimes">
+    <div class="schedule">
+        <div class="title">
+            <span class="material-icons transportation-icon">
+                directions_bus
+            </span> Tessinparken Linje 54
+            <p class="latest-update">(Latest update: {{transportationTimes.bus?.latestUpdate}})
+            </p>
+        </div>
+        <div>
+            <div class="board-times" [innerHTML]=transportationTimes.bus?.boardTime>
+            </div>
+        </div>
+    </div>
+    <div class="schedule">
+        <div class="title">
+            <span class="material-icons transportation-icon">
+                directions_subway
+            </span> Gärdet Linje 13
+            <p class="latest-update">(Latest update: {{transportationTimes.metro?.latestUpdate}})
+            </p>
+        </div>
+        <div>
+            <div class="board-times" [innerHTML]=transportationTimes.metro?.boardTime>
+            </div>
+        </div>
+    </div>
+</div>
