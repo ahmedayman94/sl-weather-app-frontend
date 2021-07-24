@@ -47,10 +47,9 @@
             </div>
         </div>
     </div>
-    <div id="quote">
-        {{this.quote?.quoteStr}}
-        <p id="quote-author">– {{this.quote?.author}}</p>
-    </div>
+
+    <app-quote></app-quote>
+
     <div class="container-weather">
         <div id="sun-times" class="flex-end" *ngIf="sunTime">
             <div>

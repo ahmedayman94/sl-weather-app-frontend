@@ -11,20 +11,29 @@ import { WeatherWeekForecast } from '../models/weather-week-forecast.model';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
-    public readonly weatherbitIconMapping = {
-        "c01d": "clear_day.svg",
-        "c01n": "clear_night.svg",
-        "c02d": "partly_cloudy_day.svg",
-        "c02n": "partly_cloudy_night.svg",
-        "c03d": "partly_cloudy_day.svg",
-        "c03n": "partly_cloudy_night.svg",
-        "c04d": "mostly_cloudy.svg",
-        "c04n": "mostly_cloudy.svg",
-        // "u00d": "rain.svg",
-        // "u00n": "rain.svg",
-        // "t01d": "tstorm.svg",
-        // "t01n": "tstorm.svg"
-    };
+    public get weatherbitIconMapping() {
+        return {
+            "c01d": "clear_day.svg",
+            "c01n": "clear_night.svg",
+            "c02d": "partly_cloudy_day.svg",
+            "c02n": "partly_cloudy_night.svg",
+            "c03d": "partly_cloudy_day.svg",
+            "c03n": "partly_cloudy_night.svg",
+            "c04d": "mostly_cloudy.svg",
+            "c04n": "mostly_cloudy.svg",
+            // "u00d": "rain.svg",
+            // "u00n": "rain.svg",
+            // "t01d": "tstorm.svg",
+            // "t01n": "tstorm.svg"
+        };
+    }
+
+    public get sunImages() {
+        return {
+            sunrise: "./assets/img/sunrise.png",
+            sunset: "./assets/img/sunset.png"
+        }
+    }
 
     private queryParams = {
         fields: "temp,feels_like,precipitation_type,precipitation_probability,sunrise,sunset,weather_code",

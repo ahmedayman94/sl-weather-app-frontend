@@ -115,24 +115,6 @@
 }
 
 /**
-* Quote 
-**/
-
-#quote {
-    font-style: italic;
-    padding: 0px 150px;
-    font-size: 28px;
-    text-align: center;
-    font-weight: bold;
-}
-
-#quote-author {
-    font-style: normal !important;
-    padding: 0px;
-    margin: 20px 0px 0px 0px;
-}
-
-/**
 * Weather and sunrise/sunset times
 **/
 

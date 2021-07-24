@@ -5,6 +5,7 @@ import { switchMap, retryWhen, mergeMap, map, retry, skip } from 'rxjs/operators
 import { WeatherService } from 'src/app/shared/services/weather.service';
 import { ClockService } from 'src/app/shared/services/clock.service';
 import { QuoteService } from 'src/app/shared/services/quote.service';
+import { GeneralService } from 'src/app/shared/services/general.service';
 import { SunTimes } from 'src/app/shared/models/sun-time.model';
 
 enum Stations {
@@ -52,33 +53,19 @@ export class SlInfoComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private application = ["SL", "Weatherbit", "Climacell"];
-  private readonly images = [
-    "https://vistapointe.net/images/stockholm-7.jpg",
-    "https://cdn.pixabay.com/photo/2015/07/16/23/05/stockholm-848255_1280.jpg",
-    "https://images.unsplash.com/photo-1542096275-2c33b1bdb375?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
-    "https://images.unsplash.com/photo-1484037832928-afe345637f55?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80",
-    "https://images.unsplash.com/photo-1508189860359-777d945909ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
-    "https://images5.alphacoders.com/601/601884.jpg",
-    "https://images2.alphacoders.com/734/734513.jpg",
-    "https://wallpapercave.com/wp/wp2025113.jpg",
-    "https://images.alphacoders.com/109/1094713.jpg",
-    "https://images.alphacoders.com/485/485910.jpg",
-    "/assets/img/bastien-herve--QBnKsP1P00-unsplash.jpg",
-    "/assets/img/henrik_trygg-archipelago-4145.jpg",
-    "/assets/img/wallpaperflare.com_wallpaper.jpg",
-    "/assets/img/Stockholm_Wallpaper_Live_Stockholm_Wallpapers_CAT98_Stockholm.jpg"
-  ];
-  public readonly sunImages = {
-    sunrise: "./assets/img/sunrise.png",
-    sunset: "./assets/img/sunset.png"
-  }
+  private readonly images: string[];
+  public readonly sunImages;
 
   constructor(
     private slService: SLService,
     private weatherService: WeatherService,
     private clockService: ClockService,
-    private quoteService: QuoteService
-  ) { }
+    private quoteService: QuoteService,
+    private generalService: GeneralService,
+  ) {
+    this.sunImages = this.weatherService.sunImages;
+    this.images = this.generalService.wallpaperImages;
+  }
 
   ngOnInit() {
     this.subscriptions = [
@@ -87,7 +74,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
       this.getWeatherHourlyApiSub(),
       this.getWeatherDailyApiSub(),
       this.getSlApiSub(),
-      this.getQuoteApiSub()
     ];
   }
 
@@ -233,14 +219,6 @@ export class SlInfoComponent implements OnInit, OnDestroy {
             day: this.clockService.getDayOfWeek(w.day),
           };
         });
-      });
-  }
-
-  private getQuoteApiSub(): Subscription {
-    return this.quoteService.fetchQuote()
-      .subscribe(res => {
-        this.quote.quoteStr = res.content;
-        this.quote.author = res.author;
       });
   }
 
