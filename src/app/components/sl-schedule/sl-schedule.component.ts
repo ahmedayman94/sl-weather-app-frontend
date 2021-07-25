@@ -90,8 +90,8 @@ export class SlScheduleComponent implements OnInit {
     } else {
       this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
       this._errorSlObj.color = "red";
-      debugger;
       this.onError.next(this._errorSlObj);
+      
       throw new Error(errorMessage);
     }
   }
