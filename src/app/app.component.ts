@@ -11,7 +11,7 @@ export class AppComponent {
   private readonly _errorSlSubject$ = new BehaviorSubject<ErrorModel>({ message: null, color: null });
   public errorSl$ = this._errorSlSubject$.asObservable();
 
-  public _errorWeatherSubject$ = new BehaviorSubject<ErrorModel>(null);
+  private _errorWeatherSubject$ = new BehaviorSubject<ErrorModel>(null);
   public errorWeather$ = this._errorWeatherSubject$.asObservable();
 
   constructor() { }
