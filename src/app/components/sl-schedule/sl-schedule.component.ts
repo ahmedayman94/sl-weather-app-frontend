@@ -58,8 +58,8 @@ export class SlScheduleComponent implements OnInit {
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
     const maxSlowerRetryTimes = 15, // Slower retry that runs every 10 minutes
       maxRetryTimes = 5,
-      delayTime = 0,
-      slowerDelayTime = 0 * 10; // Delay time of 10 minutes
+      delayTime = 15000,
+      slowerDelayTime = 60000 * 10; // Delay time of 10 minutes
 
     return (attempts: Observable<any>) => {
       return attempts.pipe(
