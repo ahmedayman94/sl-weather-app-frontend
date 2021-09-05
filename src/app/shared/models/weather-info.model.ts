@@ -8,5 +8,6 @@ export interface WeatherInfo {
 export interface WeatherDailyInfo {
     day: string;
     min: string;
-    max: string
+    max: string;
+    icon: string;
 }

@@ -8,7 +8,8 @@ export const environment = {
   localWeatherApiUrl: "/v2.0/forecast/hourly",
   localClimacellHourlyApiUrl: "./assets/weather-climacell-mockdata.json",
   localClimacellDailyApiUrl: "./assets/weather-climacell-mock-daily.json",
-  weatherApiKey: "<Weather-api-key>"
+  weatherApiKey: "<Weather-api-key>",
+  localOpenWeatherOpenApiUrl: './assets/weather-openweather-mock.json',
 };
 
 /*

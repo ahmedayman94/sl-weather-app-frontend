@@ -24,14 +24,14 @@
             <div>
                 {{w.temperature}}
             </div>
-            <div style="font-size: 80%;">
+            <div style="font-size: 75%;">
                 {{w.feelsLike}}
             </div>
         </div>
     </div>
     <div id="weather-week-list" class="flex-end">
         <div class="weather-day-item" *ngFor="let weatherDay of weatherDailyInfo$ | async">
-            <div>
+            <div class="day-of-week">
                 {{weatherDay.day}}
             </div>
             <div>
@@ -41,7 +41,7 @@
                 {{weatherDay.min}}
             </div>
             <div>
-                <img style="width: 30px; height: 30px" [src]="getImageByCode(weatherDay.icon, weatherApp)">
+                <img style="width: 40px; height: 40px" [src]="getImageByCode(weatherDay.icon, weatherApp)">
             </div>
         </div>
 

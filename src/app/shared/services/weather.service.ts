@@ -8,6 +8,7 @@ import { SunTimesDataContent } from '../models/sun-time.model';
 import { ClimacellDailyApResponseData } from '../models/api-response/climacell-daily-api-responsedata.model';
 import { map } from 'rxjs/operators';
 import { WeatherWeekForecast } from '../models/weather-week-forecast.model';
+import { HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
@@ -36,10 +37,9 @@ export class WeatherService {
     }
 
     private queryParams = {
-        fields: "temp,feels_like,precipitation_type,precipitation_probability,sunrise,sunset,weather_code",
         lat: "59.32932349999999",
         lon: "18.0685808",
-        unit_system: "si"
+        units: "metric",
     };
 
     constructor(
@@ -52,22 +52,6 @@ export class WeatherService {
             environment.localWeatherApiUrl;
 
         return this.httpClient.get<WeatherbitApiResponse>(url);
-    }
-
-    public fetchHourlyWeatherClimacell(): Observable<ClimacellHourlyApResponseData[]> {
-        const startTimeDate = new Date();
-        const endTimeDate = new Date(startTimeDate.getTime() + 60 * 60 * 1000 * 8);
-        const startTime = startTimeDate.toISOString();
-        const endTime = endTimeDate.toISOString();
-
-        const url = environment.localClimacellHourlyApiUrl;
-        const queryParams = environment.production ? {
-            ...this.queryParams,
-            start_time: startTime,
-            end_time: endTime
-        } : null;
-
-        return this.httpClient.get<ClimacellHourlyApResponseData[]>(url, { params: queryParams });
     }
 
     public fetchDailyWeatherClimacell(): Observable<WeatherWeekForecast[]> {
@@ -104,7 +88,7 @@ export class WeatherService {
             }));
     }
 
-    public getTimeForSunClimacell(sunDateObj: Date): SunTimesDataContent {
+    public getTimeForSunOpenWeather(sunDateObj: Date): SunTimesDataContent {
         return {
             comparisonValues: { hours: sunDateObj.getHours(), minutes: sunDateObj.getMinutes() },
             time: sunDateObj.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
@@ -127,5 +111,25 @@ export class WeatherService {
         } else {
             return weatherCode + "_night";
         }
+    }
+
+    public fetchOpenWeatherDaily(): Observable<OpenWeatherOneCallApi> {
+        const url = environment.localOpenWeatherOpenApiUrl;
+        const queryParams = {
+            ...this.queryParams,
+            exclude: 'minutes,hourly',
+        }
+
+        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams });
+    }
+
+    public fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
+        const url = environment.localOpenWeatherOpenApiUrl;
+        const queryParams = {
+            ...this.queryParams,
+            exclude: 'minutes,daily',
+        }
+
+        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(map(res => res?.hourly.slice(0, 10)));
     }
 }

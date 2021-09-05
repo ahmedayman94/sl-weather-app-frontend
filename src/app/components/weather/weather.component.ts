@@ -30,51 +30,46 @@ export class WeatherComponent implements OnInit {
   constructor(private weatherService: WeatherService, private clockService: ClockService) {
     this.sunImages = this.weatherService.sunImages;
 
-    const climaCellResponse$ = this.clockService.hourlyMark$.pipe(
-      switchMap(() => this.weatherService.fetchHourlyWeatherClimacell()),
-      retry(3),
-      share(),
-      catchError(err => {
-        this.onError.emit(err)
-        throw new Error(err);
-      }),
-    );
+    const openWeatherResponseDaily$ = this.weatherService.fetchOpenWeatherDaily()
+      .pipe(share());
 
-    this.sunTimes$ = climaCellResponse$.pipe(
+    this.sunTimes$ = openWeatherResponseDaily$.pipe(
+      map(res => res.daily[1]), // Tommorow's sunrise/sunset time
       map(res =>
       ({
-        sunrise: this.weatherService.getTimeForSunClimacell(new Date(res[0].sunrise.value)),
-        sunset: this.weatherService.getTimeForSunClimacell(new Date(res[0].sunset.value)),
+        sunrise: this.weatherService.getTimeForSunOpenWeather(new Date(res.sunrise * 1000)),
+        sunset: this.weatherService.getTimeForSunOpenWeather(new Date(res.sunset * 1000)),
       })
       )
     );
 
-    this.weatherHourlyInfo$ = climaCellResponse$.pipe(
-      map(res =>
-        res.map(hourlyRes => {
-          const time = new Date(hourlyRes.observation_time.value).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
-          const temp = Math.round(hourlyRes.temp.value);
-          const feelsLikeTemp = Math.round(hourlyRes.feels_like.value);
-          const feelsLike = feelsLikeTemp !== temp ? `(${feelsLikeTemp} °C)` : null;
-          const icon = this.weatherService.adjustWeatherCodeClimacell(hourlyRes.weather_code.value, hourlyRes.observation_time.value, hourlyRes.sunrise.value, hourlyRes.sunset.value);
-
-          return {
-            time,
-            temperature: `${temp} °C`,
-            feelsLike,
-            icon
-          };
-        })
-      ),
-    );
-
-    this.weatherDailyInfo$ = this.weatherService.fetchDailyWeatherClimacell()
+    this.weatherHourlyInfo$ = this.weatherService.fetchOpenWeatherHourly()
       .pipe(
+        map(res =>
+          res.map(w => {
+            const feelsLikeTemp = Math.round(w.feels_like)
+            const feelsLike = feelsLikeTemp !== w.temp ? `(${feelsLikeTemp} °C)` : null;
+
+            return ({
+              time: new Date(w.dt * 1000).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
+              temperature: `${Math.round(w.temp)} °C`,
+              feelsLike,
+              icon: w.weather[0].icon,
+            })
+          }
+          ))
+      )
+
+    this.weatherDailyInfo$ = openWeatherResponseDaily$
+      .pipe(
+        map(res => res.daily),
         map(res =>
           res.map(w =>
           ({
-            ...w,
-            day: this.clockService.getDayOfWeek(w.day),
+            min: `${Math.round(w.temp.min)}`,
+            max: `${Math.round(w.temp.max)}`,
+            day: this.clockService.getDayOfWeek(new Date(w.dt * 1000).getDay()),
+            icon: w.weather[0].icon,
           }))
         ),
       );
@@ -84,16 +79,6 @@ export class WeatherComponent implements OnInit {
   }
 
   public getImageByCode(code: string, weatherApp: WeatherApp): string {
-    let imgLink: string;
-    if (weatherApp === WeatherApp.WEATHERBIT) {
-      const newImgMapped = this.weatherService.weatherbitIconMapping[code];
-      imgLink = newImgMapped ?
-        `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${newImgMapped}` :
-        `https://www.weatherbit.io/static/img/icons/${code}.png`;
-    } else {
-      imgLink = `https://raw.githubusercontent.com/ClimaCell-API/weather-code-icons/79fe6484cd5f9f7a482d7391c12712a1ac1b2602/color/${code}.svg`;
-    }
-
-    return imgLink;
+    return `https://openweathermap.org/img/wn/${code}@4x.png`;
   }
 }

@@ -4,7 +4,6 @@
 }
 
 .main>* {
-    text-align: center;
     font-size: 32px;
 }
 
@@ -21,10 +20,10 @@
 
 .weather-list-item {
     width: 100%;
-    text-align: center;
 }
 
 #weather-week-list {
+    margin-left: auto;
     display: flex;
     flex-direction: column;
     width: 25%;
@@ -37,8 +36,8 @@
     flex-direction: row;
 }
 
-.weather-day-item>* {
-    width: 33%;
+.day-of-week {
+    width: 25%;
 }
 
 .weather-day-item>* {
