@@ -3,11 +3,8 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { WeatherbitApiResponse } from "src/app/shared/models/api-response/weatherbit-api-response.model";
-import { ClimacellHourlyApResponseData } from "src/app/shared/models/api-response/climacell-hourly-api-responsedata.model";
 import { SunTimesDataContent } from '../models/sun-time.model';
-import { ClimacellDailyApResponseData } from '../models/api-response/climacell-daily-api-responsedata.model';
 import { map } from 'rxjs/operators';
-import { WeatherWeekForecast } from '../models/weather-week-forecast.model';
 import { HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
 
 @Injectable({ providedIn: 'root' })
@@ -52,40 +49,6 @@ export class WeatherService {
             environment.localWeatherApiUrl;
 
         return this.httpClient.get<WeatherbitApiResponse>(url);
-    }
-
-    public fetchDailyWeatherClimacell(): Observable<WeatherWeekForecast[]> {
-        const now = new Date();
-        const startTimeMilliseconds = new Date().setDate(now.getDate() + 1);
-        const endTimeMilliseconds = new Date().setDate(now.getDate() + 6);
-
-        const startDate = new Date(startTimeMilliseconds).toISOString();
-        const endDate = new Date(endTimeMilliseconds).toISOString();
-
-        const url = environment.localClimacellDailyApiUrl;
-        const queryParams = {
-            ...this.queryParams,
-            fields: "temp,sunrise,sunset,weather_code",
-            start_time: startDate,
-            end_time: endDate
-        };
-
-        return this.httpClient.get<ClimacellDailyApResponseData[]>(url, { params: queryParams })
-            .pipe(map(res => {
-                const responseData: WeatherWeekForecast[] = res.map(data => {
-                    const minTemp = data.temp.find(t => t.min != null);
-                    const maxTemp = data.temp.find(t => t.max != null);
-
-                    return {
-                        day: new Date(data.observation_time.value).getDay(),
-                        min: `${Math.round(minTemp.min.value)} °C`,
-                        max: `${Math.round(maxTemp.max.value)} °C`,
-                        icon: this.adjustWeatherCodeClimacell(data.weather_code.value)
-                    };
-                });
-
-                return responseData;
-            }));
     }
 
     public getTimeForSunOpenWeather(sunDateObj: Date): SunTimesDataContent {
