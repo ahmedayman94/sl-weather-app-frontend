@@ -58,8 +58,8 @@ export class SlScheduleComponent implements OnInit {
   private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
     const maxSlowerRetryTimes = 15, // Slower retry that runs every 10 minutes
       maxRetryTimes = 5,
-      delayTime = 0,
-      slowerDelayTime = 0 * 10; // Delay time of 10 minutes
+      delayTime = 15000,
+      slowerDelayTime = 60000 * 10; // Delay time of 10 minutes
 
     return (attempts: Observable<any>) => {
       return attempts.pipe(
@@ -90,8 +90,8 @@ export class SlScheduleComponent implements OnInit {
     } else {
       this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
       this._errorSlObj.color = "red";
-      debugger;
       this.onError.next(this._errorSlObj);
+      
       throw new Error(errorMessage);
     }
   }
