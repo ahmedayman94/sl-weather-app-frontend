@@ -115,6 +115,8 @@ export class WeatherService {
 
     public fetchOpenWeatherDaily(): Observable<OpenWeatherOneCallApi> {
         const url = environment.localOpenWeatherOpenApiUrl;
+        // const url = `http://localhost:5001/sl-weather/api/openweather`;
+
         const queryParams = {
             ...this.queryParams,
             exclude: 'minutes,hourly',
@@ -125,6 +127,8 @@ export class WeatherService {
 
     public fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
         const url = environment.localOpenWeatherOpenApiUrl;
+        // const url = `http://localhost:5001/sl-weather/api/openweather`;
+
         const queryParams = {
             ...this.queryParams,
             exclude: 'minutes,daily',

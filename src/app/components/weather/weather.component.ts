@@ -43,22 +43,22 @@ export class WeatherComponent implements OnInit {
       )
     );
 
-    this.weatherHourlyInfo$ = this.weatherService.fetchOpenWeatherHourly()
-      .pipe(
-        map(res =>
-          res.map(w => {
-            const feelsLikeTemp = Math.round(w.feels_like)
-            const feelsLike = feelsLikeTemp !== w.temp ? `(${feelsLikeTemp} °C)` : null;
+    this.weatherHourlyInfo$ = this.clockService.hourlyMark$.pipe(
+      switchMap(() => this.weatherService.fetchOpenWeatherHourly()),
+      map(res =>
+        res.map(w => {
+          const feelsLikeTemp = Math.round(w.feels_like)
+          const feelsLike = feelsLikeTemp !== w.temp ? `(${feelsLikeTemp} °C)` : null;
 
-            return ({
-              time: new Date(w.dt * 1000).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
-              temperature: `${Math.round(w.temp)} °C`,
-              feelsLike,
-              icon: w.weather[0].icon,
-            })
-          }
-          ))
-      )
+          return ({
+            time: new Date(w.dt * 1000).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
+            temperature: `${Math.round(w.temp)} °C`,
+            feelsLike,
+            icon: w.weather[0].icon,
+          })
+        }
+        ))
+    )
 
     this.weatherDailyInfo$ = openWeatherResponseDaily$
       .pipe(

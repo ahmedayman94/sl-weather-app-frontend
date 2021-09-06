@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration=production --base-href /sl-weather/ --outputPath=\"../my-sl-weather-deployment/dist\"",
+    "build": "ng build --configuration=production --base-href /sl-weather/ --outputPath=\"../my-sl-weather-deployment/dist/sl-weather\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
