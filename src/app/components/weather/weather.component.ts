@@ -19,8 +19,6 @@ export class WeatherComponent {
 
   public sunImages: { sunrise: string; sunset: string; };
 
-  public weatherApp = WeatherApp.CLIMACELL;
-
   public weatherHourlyInfo$: Observable<WeatherHourlyInfo[]>;
 
   public weatherDailyInfo$: Observable<WeatherDailyInfo[]>;
@@ -75,7 +73,7 @@ export class WeatherComponent {
       );
   }
 
-  public getImageByCode(code: string, weatherApp: WeatherApp): string {
+  public getImageByCode(code: string): string {
     return `https://openweathermap.org/img/wn/${code}@4x.png`;
   }
 }
