@@ -16,6 +16,20 @@ export interface HourlyOpenWeather {
     weather: Weather[]
 }
 
+export interface DailyOpenWeather {
+    dt: number;
+
+    feels_like: number;
+
+    temp: TemperatureDetail;
+
+    weather: Weather[]
+
+    sunrise: number;
+
+    sunset: number;
+}
+
 interface Current {
     dt: number;
 
@@ -37,19 +51,6 @@ interface Weather {
     icon: string;
 }
 
-interface DailyOpenWeather {
-    dt: number;
-
-    feels_like: number;
-
-    temp: TemperatureDetail;
-
-    weather: Weather[]
-
-    sunrise: number;
-
-    sunset: number;
-}
 
 interface TemperatureDetail {
     min: number;

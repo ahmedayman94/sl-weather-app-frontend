@@ -13,7 +13,7 @@ import { WeatherService } from 'src/app/shared/services/weather.service';
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.css']
 })
-export class WeatherComponent implements OnInit {
+export class WeatherComponent {
 
   @Output('onWeatherError') onError = new EventEmitter<any>();
 
@@ -34,7 +34,7 @@ export class WeatherComponent implements OnInit {
       .pipe(share());
 
     this.sunTimes$ = openWeatherResponseDaily$.pipe(
-      map(res => res.daily[1]), // Tommorow's sunrise/sunset time
+      map(dailyRes => dailyRes[1]), // Tommorow's sunrise/sunset time
       map(res =>
       ({
         sunrise: this.weatherService.getTimeForSunOpenWeather(new Date(res.sunrise * 1000)),
@@ -47,22 +47,22 @@ export class WeatherComponent implements OnInit {
       switchMap(() => this.weatherService.fetchOpenWeatherHourly()),
       map(res =>
         res.map(w => {
+          const temperature = Math.round(w.temp);
           const feelsLikeTemp = Math.round(w.feels_like)
-          const feelsLike = feelsLikeTemp !== w.temp ? `(${feelsLikeTemp} °C)` : null;
+          const feelsLike = Math.abs(feelsLikeTemp - temperature) > 1 ? `(${feelsLikeTemp} °C)` : null;
 
           return ({
             time: new Date(w.dt * 1000).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
-            temperature: `${Math.round(w.temp)} °C`,
+            temperature: `${temperature} °C`,
             feelsLike,
             icon: w.weather[0].icon,
-          })
+          });
         }
         ))
-    )
+    );
 
     this.weatherDailyInfo$ = openWeatherResponseDaily$
       .pipe(
-        map(res => res.daily),
         map(res =>
           res.map(w =>
           ({
@@ -73,9 +73,6 @@ export class WeatherComponent implements OnInit {
           }))
         ),
       );
-  }
-
-  ngOnInit(): void {
   }
 
   public getImageByCode(code: string, weatherApp: WeatherApp): string {

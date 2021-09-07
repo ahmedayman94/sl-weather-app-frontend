@@ -5,32 +5,13 @@ import { environment } from 'src/environments/environment';
 import { WeatherbitApiResponse } from "src/app/shared/models/api-response/weatherbit-api-response.model";
 import { SunTimesDataContent } from '../models/sun-time.model';
 import { map } from 'rxjs/operators';
-import { HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
+import { DailyOpenWeather, HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
-    public get weatherbitIconMapping() {
-        return {
-            "c01d": "clear_day.svg",
-            "c01n": "clear_night.svg",
-            "c02d": "partly_cloudy_day.svg",
-            "c02n": "partly_cloudy_night.svg",
-            "c03d": "partly_cloudy_day.svg",
-            "c03n": "partly_cloudy_night.svg",
-            "c04d": "mostly_cloudy.svg",
-            "c04n": "mostly_cloudy.svg",
-            // "u00d": "rain.svg",
-            // "u00n": "rain.svg",
-            // "t01d": "tstorm.svg",
-            // "t01n": "tstorm.svg"
-        };
-    }
-
-    public get sunImages() {
-        return {
-            sunrise: "./assets/img/sunrise.png",
-            sunset: "./assets/img/sunset.png"
-        }
+    public sunImages = {
+        sunrise: "./assets/img/sunrise.png",
+        sunset: "./assets/img/sunset.png"
     }
 
     private queryParams = {
@@ -76,7 +57,7 @@ export class WeatherService {
         }
     }
 
-    public fetchOpenWeatherDaily(): Observable<OpenWeatherOneCallApi> {
+    public fetchOpenWeatherDaily(): Observable<DailyOpenWeather[]> {
         const url = environment.localOpenWeatherOpenApiUrl;
         // const url = `http://localhost:5001/sl-weather/api/openweather`;
 
@@ -85,7 +66,7 @@ export class WeatherService {
             exclude: 'minutes,hourly',
         }
 
-        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams });
+        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(map(res => res.daily));
     }
 
     public fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
