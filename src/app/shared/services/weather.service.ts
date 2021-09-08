@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { WeatherbitApiResponse } from "src/app/shared/models/api-response/weatherbit-api-response.model";
 import { SunTimesDataContent } from '../models/sun-time.model';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { DailyOpenWeather, HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
 
 @Injectable({ providedIn: 'root' })
@@ -64,9 +64,14 @@ export class WeatherService {
         const queryParams = {
             ...this.queryParams,
             exclude: 'minutes,hourly',
-        }
+        };
 
-        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(map(res => res.daily));
+        return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(
+            tap(res => {
+                if (res == null || res.daily == null) throw new Error('Couldnt fetch weather');
+            }),
+            map(res => res.daily)
+        );
     }
 
     public fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
@@ -76,7 +81,7 @@ export class WeatherService {
         const queryParams = {
             ...this.queryParams,
             exclude: 'minutes,daily',
-        }
+        };
 
         return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(map(res => res?.hourly.slice(0, 10)));
     }

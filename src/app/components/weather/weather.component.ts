@@ -29,7 +29,13 @@ export class WeatherComponent {
     this.sunImages = this.weatherService.sunImages;
 
     const openWeatherResponseDaily$ = this.weatherService.fetchOpenWeatherDaily()
-      .pipe(share());
+      .pipe(
+        retry(3),
+        share(),
+        catchError(err => {
+          this.onError.next({ message: 'couldnt fetch the daily weather', color: 'red' });
+          return [];
+        }));
 
     this.sunTimes$ = openWeatherResponseDaily$.pipe(
       map(dailyRes => dailyRes[1]), // Tommorow's sunrise/sunset time
@@ -38,11 +44,12 @@ export class WeatherComponent {
         sunrise: this.weatherService.getTimeForSunOpenWeather(new Date(res.sunrise * 1000)),
         sunset: this.weatherService.getTimeForSunOpenWeather(new Date(res.sunset * 1000)),
       })
-      )
+      ),
     );
 
     this.weatherHourlyInfo$ = this.clockService.hourlyMark$.pipe(
       switchMap(() => this.weatherService.fetchOpenWeatherHourly()),
+      retry(3),
       map(res =>
         res.map(w => {
           const temperature = Math.round(w.temp);
@@ -56,7 +63,11 @@ export class WeatherComponent {
             icon: w.weather[0].icon,
           });
         }
-        ))
+        )),
+      catchError(err => {
+        this.onError.next({ message: 'couldnt fetch the hourly weather', color: 'red' });
+        return [];
+      }),
     );
 
     this.weatherDailyInfo$ = openWeatherResponseDaily$
