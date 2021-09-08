@@ -58,7 +58,9 @@ export class BackgroundWallpaperComponent implements OnInit {
           self.showFirst = !self.showFirst;
           image.removeEventListener('load', handleImageLoad);
         });
-        image.src = url; // begin loading image (to browser cache)
+        setTimeout(() => {
+          image.src = url; // begin loading image (to browser cache)
+        });
       });
   }
 
