@@ -73,11 +73,11 @@ export class WeatherComponent {
     this.weatherDailyInfo$ = openWeatherResponseDaily$
       .pipe(
         map(res =>
-          res.map(w =>
+          res.map((w, idx) =>
           ({
             min: `${Math.round(w.temp.min)}`,
             max: `${Math.round(w.temp.max)}`,
-            day: this.clockService.getDayOfWeek(new Date(w.dt * 1000).getDay()),
+            day: idx === 0 ? 'Today' : this.clockService.getDayOfWeek(new Date(w.dt * 1000).getDay()),
             icon: w.weather[0].icon,
           }))
         ),
