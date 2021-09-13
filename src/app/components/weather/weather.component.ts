@@ -1,7 +1,8 @@
 import { EventEmitter } from '@angular/core';
 import { Component, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
-import { catchError, map, retry, share, switchMap } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { catchError, map, mergeMap, retry, retryWhen, share, switchMap, tap } from 'rxjs/operators';
+import { ErrorModel } from 'src/app/shared/models/error.model';
 import { WeatherApp } from 'src/app/shared/models/misc';
 import { SunTimes } from 'src/app/shared/models/sun-time.model';
 import { WeatherDailyInfo, WeatherInfo as WeatherHourlyInfo } from 'src/app/shared/models/weather-info.model';
@@ -15,7 +16,7 @@ import { WeatherService } from 'src/app/shared/services/weather.service';
 })
 export class WeatherComponent {
 
-  @Output('onWeatherError') onError = new EventEmitter<any>();
+  @Output('onWeatherError') onError = new EventEmitter<ErrorModel>();
 
   public sunImages: { sunrise: string; sunset: string; };
 
@@ -49,7 +50,7 @@ export class WeatherComponent {
 
     this.weatherHourlyInfo$ = this.clockService.hourlyMark$.pipe(
       switchMap(() => this.weatherService.fetchOpenWeatherHourly()),
-      retry(3),
+      tap(() => this.onError.next(null)),
       map(res =>
         res.map(w => {
           const temperature = Math.round(w.temp);
@@ -64,6 +65,7 @@ export class WeatherComponent {
           });
         }
         )),
+      retryWhen(this.retryStrategy()),
       catchError(err => {
         this.onError.next({ message: 'couldnt fetch the hourly weather', color: 'red' });
         return [];
@@ -86,5 +88,23 @@ export class WeatherComponent {
 
   public getImageByCode(code: string): string {
     return `https://openweathermap.org/img/wn/${code}@4x.png`;
+  }
+
+  private retryStrategy(): (attempts: Observable<any>) => (Observable<any>) {
+    const slowerDelayTime = 60000 * 10; // Delay time of 10 minutes
+
+    return (attempts: Observable<any>) =>
+      attempts.pipe(
+        mergeMap((errors, _) => {
+          this.handleError(slowerDelayTime);
+          return timer(slowerDelayTime);
+        }),
+      );
+  }
+
+  private handleError(timeDelayMs: number) {
+    const now = new Date();
+    const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+    this.onError.next({ color: 'orange', message: `Couldnt fetch weather, retrying to fetch again at ${time}` });
   }
 }

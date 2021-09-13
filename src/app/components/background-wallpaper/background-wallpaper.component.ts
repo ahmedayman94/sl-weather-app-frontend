@@ -15,15 +15,16 @@ export class BackgroundWallpaperComponent implements OnInit {
 
   public urlBottom: string;
 
-  private readonly images: string[];
+  private images: string[];
 
   private sub: Subscription;
 
-  constructor(private generalService: GeneralService, private clockService: ClockService) {
-    this.images = this.generalService.wallpaperImages;
-  }
+  private _initialized = false;
+
+  constructor(private generalService: GeneralService, private clockService: ClockService) { }
 
   ngOnInit(): void {
+    this.images = this.generalService.wallpaperImages;
     this.sub = this.getBackgroundImageSub();
   }
 
@@ -44,7 +45,10 @@ export class BackgroundWallpaperComponent implements OnInit {
   private getBackgroundImageSub(): Subscription {
     return this.clockService.hourlyMark$
       .subscribe(() => {
-        const url = this.images[Math.round(Math.random() * (this.images.length - 1))];
+        // Get a random image from without assets the first time
+        // This is due to a problem loading it first for some reason..
+        const url = !this._initialized ? this.getRandomImageFromList(4) : this.getRandomImageFromList();
+        this._initialized = true;
 
         // We do this in order to wait for the image to load before displaying it
         const image: HTMLImageElement = document.createElement('img');
@@ -64,4 +68,7 @@ export class BackgroundWallpaperComponent implements OnInit {
       });
   }
 
+  private getRandomImageFromList(len?: number): string {
+    return this.images[Math.round(Math.random() * ((len ?? this.images.length) - 1))];
+  }
 }

@@ -19,8 +19,8 @@ export class AppComponent {
   ngOnInit() {
   }
 
-  public onWeatherError(err: any): void {
-    this._errorWeatherSubject$.next({ message: err, color: "red" });
+  public onWeatherError(err: ErrorModel): void {
+    this._errorWeatherSubject$.next(err);
   }
 
   public onSlError(err: ErrorModel): void {
