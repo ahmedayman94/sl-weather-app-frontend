@@ -25,29 +25,38 @@ export class SLService {
             );
     }
 
-    public getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[]): string {
-        function calculateOriginalTableTime(tm: SLTransportationMethod, now: Date): string {
+    public getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[], journeyDirection: number): string {
+        // function calculateOriginalTableTime(tm: SLTransportationMethod, now: Date): string {
+        //     if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
+        //         return '';
+        //     }
+        //     const timeDifference = new Date(Date.parse(tm.ExpectedDateTime) - now.getTime()).getMinutes();
+        //     const regex = new RegExp(/\d+/);
+        //     const regexResult = regex.exec(tm.DisplayTime);
+        //     if (regexResult.length > 0 && timeDifference.toString() === regexResult[0]) {
+        //         return '';
+        //     }
+
+        //     return `(Original Table Time: ${timeDifference} min)`;
+        // }
+        const calculateOriginalTableTime = (tm: SLTransportationMethod, expectedTime: string): string => {
             if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
                 return '';
             }
-            const timeDifference = new Date(Date.parse(tm.ExpectedDateTime) - now.getTime()).getMinutes();
-            const regex = new RegExp(/\d+/);
-            const regexResult = regex.exec(tm.DisplayTime);
-            if (regexResult.length > 0 && timeDifference.toString() === regexResult[0]) {
-                return '';
-            }
 
-            return `(Original Table Time: ${timeDifference} min)`;
-        }
+            const tableTime = new Date(tm.TimeTabledDateTime).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+
+            return tableTime === expectedTime ? '' : tableTime;
+        };
 
         let returnStr = "<ul>";
         transportationMethod
-            .filter(tm => tm.JourneyDirection === 2)
+            .filter(tm => tm.JourneyDirection === journeyDirection)
             .slice(0, 3) // Only return a maximum of 3 values
             .forEach(tm => {
-                const now = new Date();
-                const originalTableTime = calculateOriginalTableTime(tm, now);
-                returnStr += `<li>${tm.DisplayTime}  <span>${originalTableTime}</span> </li>`;
+                const expectedTime = new Date(tm.ExpectedDateTime).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+                const originalTableTime = calculateOriginalTableTime(tm, expectedTime);
+                returnStr += `<li>${expectedTime}  <span>${originalTableTime}</span> </li>`;
             });
         returnStr += "</ul>";
 

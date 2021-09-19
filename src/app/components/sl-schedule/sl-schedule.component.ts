@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { forkJoin, Observable, timer } from 'rxjs';
-import { catchError, map, mergeMap, retryWhen, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, retryWhen, share, switchMap, tap } from 'rxjs/operators';
 import { ErrorModel } from 'src/app/shared/models/error.model';
 import { Application } from 'src/app/shared/models/misc';
 import { TransportationTimes } from 'src/app/shared/models/transportation-times.model';
@@ -29,9 +29,10 @@ export class SlScheduleComponent implements OnInit {
   constructor(private clockService: ClockService, private slService: SLService) { }
 
   ngOnInit(): void {
-    const minuteMark$ = this.clockService.minuteMark$.pipe(share());
+    // const minuteMark$ = this.clockService.minuteMark$.pipe(share());
 
-    this.transportationTimes$ = minuteMark$.pipe(
+    this.transportationTimes$ = timer(0, 2 * 60 * 1000).pipe(
+      // filter(x => x == null || x % 2 === 0),
       switchMap(() => forkJoin([this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA)])),
       tap(() => {
         // Reset error counter
@@ -41,11 +42,11 @@ export class SlScheduleComponent implements OnInit {
       map(([busRes, metroRes]) =>
       ({
         bus: {
-          boardTime: this.slService.getStrListOfNextArrivals(busRes.ResponseData.Buses),
+          boardTime: this.slService.getStrListOfNextArrivals(busRes.ResponseData.Buses, 2),
           latestUpdate: (new Date(busRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
         },
         metro: {
-          boardTime: this.slService.getStrListOfNextArrivals(metroRes.ResponseData.Metros),
+          boardTime: this.slService.getStrListOfNextArrivals(metroRes.ResponseData.Metros, 2),
           latestUpdate: (new Date(metroRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
         }
       }),
@@ -91,7 +92,7 @@ export class SlScheduleComponent implements OnInit {
       this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. Please reload the page`;
       this._errorSlObj.color = "red";
       this.onError.next(this._errorSlObj);
-      
+
       throw new Error(errorMessage);
     }
   }

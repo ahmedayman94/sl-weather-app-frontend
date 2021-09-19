@@ -8,7 +8,7 @@ export class ClockService {
     private readonly monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     private readonly _dateTime$ = new ReplaySubject<{ date: string, time: string }>();
     private readonly _hourlyMark$ = new BehaviorSubject<void>(null);
-    private readonly _minuteMark$ = new BehaviorSubject<void>(null);
+    private readonly _minuteMark$ = new BehaviorSubject<number>(null);
     private readonly _tenSecondMark$ = new BehaviorSubject<void>(null);
 
     private readonly intervalOverMinuteMark = 30
@@ -26,7 +26,7 @@ export class ClockService {
                     const nowDate = new Date();
                     if (nowDate.getSeconds() < 10 + this.intervalOverMinuteMark
                         && nowDate.getSeconds() >= this.intervalOverMinuteMark) {
-                        this._minuteMark$.next();
+                        this._minuteMark$.next(nowDate.getMinutes());
                         if (nowDate.getMinutes() < 1) {
                             this._hourlyMark$.next();
                         }
