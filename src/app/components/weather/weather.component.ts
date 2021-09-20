@@ -1,9 +1,8 @@
 import { EventEmitter } from '@angular/core';
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { Observable, timer } from 'rxjs';
-import { catchError, map, mergeMap, retry, retryWhen, share, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, retry, retryWhen, share, switchMap, tap } from 'rxjs/operators';
 import { ErrorModel } from 'src/app/shared/models/error.model';
-import { WeatherApp } from 'src/app/shared/models/misc';
 import { SunTimes } from 'src/app/shared/models/sun-time.model';
 import { WeatherDailyInfo, WeatherInfo as WeatherHourlyInfo } from 'src/app/shared/models/weather-info.model';
 import { ClockService } from 'src/app/shared/services/clock.service';
@@ -26,17 +25,25 @@ export class WeatherComponent {
 
   public sunTimes$: Observable<SunTimes>;
 
+  private _initiated = false;
+
   constructor(private weatherService: WeatherService, private clockService: ClockService) {
     this.sunImages = this.weatherService.sunImages;
 
-    const openWeatherResponseDaily$ = this.weatherService.fetchOpenWeatherDaily()
-      .pipe(
-        retry(3),
-        share(),
-        catchError(err => {
-          this.onError.next({ message: 'couldnt fetch the daily weather', color: 'red' });
-          return [];
-        }));
+
+    const openWeatherResponseDaily$ = this.clockService.hourlyMark$.pipe(
+      filter(() => !this._initiated || new Date().getHours() === 20),
+      tap(() => this._initiated = true),
+      switchMap(() => this.weatherService.fetchOpenWeatherDaily()
+        .pipe(
+          retry(3),
+          catchError(err => {
+            this.onError.next({ message: 'couldnt fetch the daily weather', color: 'red' });
+            return [];
+          })),
+      ),
+      share(),
+    );
 
     this.sunTimes$ = openWeatherResponseDaily$.pipe(
       map(dailyRes => dailyRes[1]), // Tommorow's sunrise/sunset time
