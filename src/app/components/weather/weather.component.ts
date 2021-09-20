@@ -58,7 +58,7 @@ export class WeatherComponent {
           const feelsLike = Math.abs(feelsLikeTemp - temperature) > 1 ? `(${feelsLikeTemp} °C)` : null;
 
           return ({
-            time: new Date(w.dt * 1000).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }),
+            time: this.clockService.getTimeFormatFromDate(new Date(w.dt * 1000)),
             temperature: `${temperature} °C`,
             feelsLike,
             icon: w.weather[0].icon,
@@ -104,7 +104,7 @@ export class WeatherComponent {
 
   private handleError(timeDelayMs: number) {
     const now = new Date();
-    const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+    const time = this.clockService.getTimeFormatFromDate(new Date(now.getTime() + timeDelayMs));
     this.onError.next({ color: 'orange', message: `Couldnt fetch weather, retrying to fetch again at ${time}` });
   }
 }

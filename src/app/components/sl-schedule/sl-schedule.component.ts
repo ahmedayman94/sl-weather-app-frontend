@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { forkJoin, Observable, timer } from 'rxjs';
-import { catchError, filter, map, mergeMap, retryWhen, share, switchMap, tap } from 'rxjs/operators';
+import { map, mergeMap, retryWhen, share, switchMap, tap } from 'rxjs/operators';
 import { ErrorModel } from 'src/app/shared/models/error.model';
 import { Application } from 'src/app/shared/models/misc';
 import { TransportationTimes } from 'src/app/shared/models/transportation-times.model';
@@ -43,11 +43,11 @@ export class SlScheduleComponent implements OnInit {
       ({
         bus: {
           boardTime: this.slService.getStrListOfNextArrivals(busRes.ResponseData.Buses, 2),
-          latestUpdate: (new Date(busRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+          latestUpdate: this.clockService.getTimeFormatFromDate(new Date(busRes.ResponseData.LatestUpdate)),
         },
         metro: {
           boardTime: this.slService.getStrListOfNextArrivals(metroRes.ResponseData.Metros, 2),
-          latestUpdate: (new Date(metroRes.ResponseData.LatestUpdate)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+          latestUpdate: this.clockService.getTimeFormatFromDate(new Date(metroRes.ResponseData.LatestUpdate)),
         }
       }),
       ),
@@ -84,7 +84,7 @@ export class SlScheduleComponent implements OnInit {
   private handleError(cause: number, errorMessage: string, timeDelayMs?: number): void {
     if (timeDelayMs) {
       const now = new Date();
-      const time = (new Date(now.getTime() + timeDelayMs)).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+      const time = this.clockService.getTimeFormatFromDate(new Date(now.getTime() + timeDelayMs));
       this._errorSlObj.message = `Error occured with the ${this.application[cause]} api. The schedule is not up to date. Will retry again at ${time}.`;
       this._errorSlObj.color = "orange";
       this.onError.next(this._errorSlObj);

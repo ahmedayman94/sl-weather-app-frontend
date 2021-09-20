@@ -6,6 +6,7 @@ import { WeatherbitApiResponse } from "src/app/shared/models/api-response/weathe
 import { SunTimesDataContent } from '../models/sun-time.model';
 import { map, tap } from 'rxjs/operators';
 import { DailyOpenWeather, HourlyOpenWeather, OpenWeatherOneCallApi } from '../models/api-response/openweather-api-response.model';
+import { ClockService } from './clock.service';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
@@ -21,7 +22,8 @@ export class WeatherService {
     };
 
     constructor(
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private clockService: ClockService,
     ) { }
 
     public fetchWeatherWeatherbit(hours: number): Observable<WeatherbitApiResponse> {
@@ -35,7 +37,7 @@ export class WeatherService {
     public getTimeForSunOpenWeather(sunDateObj: Date): SunTimesDataContent {
         return {
             comparisonValues: { hours: sunDateObj.getHours(), minutes: sunDateObj.getMinutes() },
-            time: sunDateObj.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' })
+            time: this.clockService.getTimeFormatFromDate(sunDateObj),
         };
     }
 

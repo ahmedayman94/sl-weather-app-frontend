@@ -5,11 +5,13 @@ import { SLApiResponse } from '../models/api-response/sl-api-response.model';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SLTransportationMethod } from '../models/sl-transportation-method.model';
+import { ClockService } from './clock.service';
 
 @Injectable({ providedIn: 'root' })
 export class SLService {
     constructor(
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private clockService: ClockService,
     ) {
     }
 
@@ -44,7 +46,7 @@ export class SLService {
                 return '';
             }
 
-            const tableTime = new Date(tm.TimeTabledDateTime).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+            const tableTime = this.clockService.getTimeFormatFromDate(new Date(tm.TimeTabledDateTime));
 
             return tableTime === expectedTime ? '' : tableTime;
         };
@@ -54,7 +56,7 @@ export class SLService {
             .filter(tm => tm.JourneyDirection === journeyDirection)
             .slice(0, 3) // Only return a maximum of 3 values
             .forEach(tm => {
-                const expectedTime = new Date(tm.ExpectedDateTime).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+                const expectedTime = this.clockService.getTimeFormatFromDate(new Date(tm.ExpectedDateTime));
                 const originalTableTime = calculateOriginalTableTime(tm, expectedTime);
                 returnStr += `<li>${expectedTime}  <span>${originalTableTime}</span> </li>`;
             });
