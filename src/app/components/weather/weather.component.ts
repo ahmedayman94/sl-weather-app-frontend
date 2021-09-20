@@ -36,7 +36,7 @@ export class WeatherComponent {
       tap(() => this._initiated = true),
       switchMap(() => this.weatherService.fetchOpenWeatherDaily()
         .pipe(
-          retry(3),
+          retryWhen(this.retryStrategy()),
           catchError(err => {
             this.onError.next({ message: 'couldnt fetch the daily weather', color: 'red' });
             return [];
