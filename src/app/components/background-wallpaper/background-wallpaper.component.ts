@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ClockService } from 'src/app/shared/services/clock.service';
 import { GeneralService } from 'src/app/shared/services/general.service';
 
@@ -9,19 +10,29 @@ import { GeneralService } from 'src/app/shared/services/general.service';
   styleUrls: ['./background-wallpaper.component.css']
 })
 export class BackgroundWallpaperComponent implements OnInit {
-  public showFirst = true;
+  showFirst = true;
 
-  public urlTop: string;
+  urlTop$: Observable<string>;
 
-  public urlBottom: string;
+  urlBottom$: Observable<string>;
 
   private images: string[];
+
+  private _urlTopSubject = new BehaviorSubject<string>('');
+
+  private _urlBottomSubject = new BehaviorSubject<string>('');
 
   private sub: Subscription;
 
   private _initialized = false;
 
-  constructor(private generalService: GeneralService, private clockService: ClockService) { }
+  constructor(private generalService: GeneralService, private clockService: ClockService) {
+    this.urlBottom$ = this._urlBottomSubject.asObservable()
+      .pipe(map(url => `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`));
+
+    this.urlTop$ = this._urlTopSubject.asObservable()
+      .pipe(map(url => `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`));
+  }
 
   ngOnInit(): void {
     this.images = this.generalService.wallpaperImages;
@@ -30,16 +41,6 @@ export class BackgroundWallpaperComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
-  }
-
-  public getBackgroundTop(): string {
-    const url = this.urlTop ?? '';
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
-  }
-
-  public getBackgroundBottom(): string {
-    const url = this.urlBottom ?? '';
-    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
   }
 
   private getBackgroundImageSub(): Subscription {
@@ -55,9 +56,9 @@ export class BackgroundWallpaperComponent implements OnInit {
         let self = this;
         image.addEventListener('load', function handleImageLoad() {
           if (self.showFirst) {
-            self.urlTop = url;
+            self._urlTopSubject.next(url);
           } else {
-            self.urlBottom = url;
+            self._urlBottomSubject.next(url);
           }
           self.showFirst = !self.showFirst;
           image.removeEventListener('load', handleImageLoad);
