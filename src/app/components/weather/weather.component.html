@@ -14,18 +14,18 @@
         </div>
     </div>
     <div id="weather-list" class="flex-end">
-        <div class="weather-list-item" *ngFor="let w of weatherHourlyInfo$ | async">
+        <div class="weather-list-item" *ngFor="let weatherHour of weatherHourlyInfo$ | async">
             <div>
-                {{w.time}}
+                {{weatherHour.time}}
             </div>
             <div>
-                <img style="width: 50px; height: 50px" [src]="getImageByCode(w.icon)">
+                <img style="width: 50px; height: 50px" [src]="weatherHour.icon">
             </div>
             <div>
-                {{w.temperature}}
+                {{weatherHour.temperature}}
             </div>
             <div style="font-size: 75%;">
-                {{w.feelsLike}}
+                {{weatherHour.feelsLike}}
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
                 {{weatherDay.min}}
             </div>
             <div>
-                <img style="width: 40px; height: 40px" [src]="getImageByCode(weatherDay.icon)">
+                <img style="width: 40px; height: 40px" [src]="weatherDay.icon">
             </div>
         </div>
 

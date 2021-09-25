@@ -68,7 +68,7 @@ export class WeatherComponent {
             time: this.clockService.getTimeFormatFromDate(new Date(w.dt * 1000)),
             temperature: `${temperature} °C`,
             feelsLike,
-            icon: w.weather[0].icon,
+            icon: this.getImageByCode(w.weather[0].icon),
           });
         }
         )),
@@ -87,13 +87,13 @@ export class WeatherComponent {
             min: `${Math.round(w.temp.min)}`,
             max: `${Math.round(w.temp.max)}`,
             day: idx === 0 ? 'Today' : this.clockService.getDayOfWeek(new Date(w.dt * 1000).getDay()),
-            icon: w.weather[0].icon,
+            icon: this.getImageByCode(w.weather[0].icon),
           }))
         ),
       );
   }
 
-  public getImageByCode(code: string): string {
+  private getImageByCode(code: string): string {
     return `https://openweathermap.org/img/wn/${code}@4x.png`;
   }
 
