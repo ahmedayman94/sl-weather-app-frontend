@@ -48,8 +48,9 @@ export class BackgroundWallpaperComponent implements OnInit {
       .subscribe(() => {
         // Get a random image from without assets the first time
         // This is due to a problem loading it first for some reason..
-        const url = !this._initialized ? this.getRandomImageFromList(4) : this.getRandomImageFromList();
-        this._initialized = true;
+        // const url = !this._initialized ? this.getRandomImageFromList(4) : this.getRandomImageFromList();
+        // this._initialized = true;
+        const url = this.getRandomImageFromList();
 
         // We do this in order to wait for the image to load before displaying it
         const image: HTMLImageElement = document.createElement('img');
