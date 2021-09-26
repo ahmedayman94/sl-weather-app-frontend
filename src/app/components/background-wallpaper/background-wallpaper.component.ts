@@ -24,14 +24,12 @@ export class BackgroundWallpaperComponent implements OnInit {
 
   private sub: Subscription;
 
-  private _initialized = false;
-
   constructor(private generalService: GeneralService, private clockService: ClockService) {
     this.urlBottom$ = this._urlBottomSubject.asObservable()
-      .pipe(map(url => `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`));
+      .pipe(map(this.getBackgroundWithGradient));
 
     this.urlTop$ = this._urlTopSubject.asObservable()
-      .pipe(map(url => `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`));
+      .pipe(map(this.getBackgroundWithGradient));
   }
 
   ngOnInit(): void {
@@ -46,10 +44,6 @@ export class BackgroundWallpaperComponent implements OnInit {
   private getBackgroundImageSub(): Subscription {
     return this.clockService.hourlyMark$
       .subscribe(() => {
-        // Get a random image from without assets the first time
-        // This is due to a problem loading it first for some reason..
-        // const url = !this._initialized ? this.getRandomImageFromList(4) : this.getRandomImageFromList();
-        // this._initialized = true;
         const url = this.getRandomImageFromList();
 
         // We do this in order to wait for the image to load before displaying it
@@ -72,5 +66,9 @@ export class BackgroundWallpaperComponent implements OnInit {
 
   private getRandomImageFromList(len?: number): string {
     return this.images[Math.round(Math.random() * ((len ?? this.images.length) - 1))];
+  }
+
+  private getBackgroundWithGradient(url: string): string {
+    return `linear-gradient(rgba(77, 74, 76, 0.6), rgba(0, 0, 0, 0.6)), url("${url}")`;
   }
 }
