@@ -17,8 +17,8 @@ export class GeneralService {
         "./assets/img/wallpaperflare.com_wallpaper.jpg",
         "./assets/img/Stockholm_Wallpaper_Live_Stockholm_Wallpapers_CAT98_Stockholm.jpg",
         "./assets/img/900579.jpeg",
-        "./assets/wp2025143-stockholm-wallpapers.jpeg",
-        "./assets/gamla_stan.jpg"
+        "./assets/img/wp2025143-stockholm-wallpapers.jpeg",
+        "./assets/img/gamla_stan.jpg"
     ];
 
     constructor() { }
