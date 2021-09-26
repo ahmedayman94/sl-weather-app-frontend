@@ -28,19 +28,6 @@ export class SLService {
     }
 
     public getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[], journeyDirection: number): string {
-        // function calculateOriginalTableTime(tm: SLTransportationMethod, now: Date): string {
-        //     if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
-        //         return '';
-        //     }
-        //     const timeDifference = new Date(Date.parse(tm.ExpectedDateTime) - now.getTime()).getMinutes();
-        //     const regex = new RegExp(/\d+/);
-        //     const regexResult = regex.exec(tm.DisplayTime);
-        //     if (regexResult.length > 0 && timeDifference.toString() === regexResult[0]) {
-        //         return '';
-        //     }
-
-        //     return `(Original Table Time: ${timeDifference} min)`;
-        // }
         const calculateOriginalTableTime = (tm: SLTransportationMethod, expectedTime: string): string => {
             if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
                 return '';
@@ -48,7 +35,7 @@ export class SLService {
 
             const tableTime = this.clockService.getTimeFormatFromDate(new Date(tm.TimeTabledDateTime));
 
-            return tableTime === expectedTime ? '' : tableTime;
+            return tableTime === expectedTime ? '' : `(Original table time: ${tableTime})`;
         };
 
         let returnStr = "<ul>";
