@@ -10,9 +10,9 @@ import { QuoteService } from 'src/app/shared/services/quote.service';
 })
 export class QuoteComponent implements OnInit {
 
-  public quoteContent$: Observable<string>;
+  quoteContent$: Observable<string>;
 
-  public quoteAuthor$: Observable<string>;
+  quoteAuthor$: Observable<string>;
 
   constructor(private quoteService: QuoteService) { }
 

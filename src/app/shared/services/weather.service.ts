@@ -10,7 +10,7 @@ import { ClockService } from './clock.service';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
-    public sunImages = {
+    sunImages = {
         sunrise: "./assets/img/sunrise.png",
         sunset: "./assets/img/sunset.png"
     }
@@ -26,7 +26,7 @@ export class WeatherService {
         private clockService: ClockService,
     ) { }
 
-    public fetchWeatherWeatherbit(hours: number): Observable<WeatherbitApiResponse> {
+    fetchWeatherWeatherbit(hours: number): Observable<WeatherbitApiResponse> {
         const url = environment.production ?
             `${environment.localWeatherApiUrl}?city=Stockholm&hours=${hours}` :
             environment.localWeatherApiUrl;
@@ -34,14 +34,14 @@ export class WeatherService {
         return this.httpClient.get<WeatherbitApiResponse>(url);
     }
 
-    public getTimeForSunOpenWeather(sunDateObj: Date): SunTimesDataContent {
+    getTimeForSunOpenWeather(sunDateObj: Date): SunTimesDataContent {
         return {
             comparisonValues: { hours: sunDateObj.getHours(), minutes: sunDateObj.getMinutes() },
             time: this.clockService.getTimeFormatFromDate(sunDateObj),
         };
     }
 
-    public adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr?: string, sunriseTimeStr?: string, sunsetTimeStr?: string): string {
+    adjustWeatherCodeClimacell(weatherCode: string, observationTimeStr?: string, sunriseTimeStr?: string, sunsetTimeStr?: string): string {
         if (weatherCode !== "partly_cloudy" && weatherCode !== "mostly_clear" && weatherCode !== "clear")
             return weatherCode;
 
@@ -59,7 +59,7 @@ export class WeatherService {
         }
     }
 
-    public fetchOpenWeatherDaily(): Observable<DailyOpenWeather[]> {
+    fetchOpenWeatherDaily(): Observable<DailyOpenWeather[]> {
         const url = environment.localOpenWeatherOpenApiUrl;
         // const url = `http://localhost:5001/sl-weather/api/openweather`;
 
@@ -76,7 +76,7 @@ export class WeatherService {
         );
     }
 
-    public fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
+    fetchOpenWeatherHourly(): Observable<HourlyOpenWeather[]> {
         const url = environment.localOpenWeatherOpenApiUrl;
         // const url = `http://localhost:5001/sl-weather/api/openweather`;
 

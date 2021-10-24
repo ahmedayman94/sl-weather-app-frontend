@@ -15,7 +15,7 @@ export class SLService {
     ) {
     }
 
-    public fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
+    fetchNextTransportationTime(siteId: number): Observable<SLApiResponse> {
         const url = environment.production ?
             `${environment.localSLApiUrl}?siteid=${siteId}` :
             `./assets/sl-${siteId}-mockdata.json`;
@@ -27,7 +27,7 @@ export class SLService {
             );
     }
 
-    public getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[], journeyDirection: number): string {
+    getStrListOfNextArrivals(transportationMethod: SLTransportationMethod[], journeyDirection: number): string {
         const calculateOriginalTableTime = (tm: SLTransportationMethod, expectedTime: string): string => {
             if (tm.DisplayTime === "Nu" || tm.DisplayTime.indexOf(':') !== -1) {
                 return '';
@@ -51,5 +51,4 @@ export class SLService {
 
         return returnStr;
     }
-
 }

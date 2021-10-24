@@ -20,7 +20,7 @@ enum Stations {
 export class SlScheduleComponent implements OnInit {
   @Output('onSlError') onError = new EventEmitter<ErrorModel>();
 
-  public transportationTimes$: Observable<TransportationTimes>;
+  transportationTimes$: Observable<TransportationTimes>;
 
   private application = ["SL", "Weatherbit", "Climacell"];
 

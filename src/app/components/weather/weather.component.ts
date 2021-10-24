@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, OnInit } from '@angular/core';
 import { Component, Output } from '@angular/core';
 import { Observable, timer } from 'rxjs';
 import { catchError, filter, map, mergeMap, retry, retryWhen, share, switchMap, tap } from 'rxjs/operators';
@@ -13,34 +13,30 @@ import { WeatherService } from 'src/app/shared/services/weather.service';
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.css']
 })
-export class WeatherComponent {
+export class WeatherComponent implements OnInit {
 
   @Output('onWeatherError') onError = new EventEmitter<ErrorModel>();
 
-  public sunImages: { sunrise: string; sunset: string; };
+  sunImages: { sunrise: string; sunset: string; };
 
-  public weatherHourlyInfo$: Observable<WeatherHourlyInfo[]>;
+  weatherHourlyInfo$: Observable<WeatherHourlyInfo[]>;
 
-  public weatherDailyInfo$: Observable<WeatherDailyInfo[]>;
+  weatherDailyInfo$: Observable<WeatherDailyInfo[]>;
 
-  public sunTimes$: Observable<SunTimes>;
+  sunTimes$: Observable<SunTimes>;
 
   private _initiated = false;
 
-  constructor(private weatherService: WeatherService, private clockService: ClockService) {
+  constructor(private weatherService: WeatherService, private clockService: ClockService) { }
+
+  ngOnInit() {
     this.sunImages = this.weatherService.sunImages;
 
-
     const openWeatherResponseDaily$ = this.clockService.hourlyMark$.pipe(
-      filter(() => !this._initiated || new Date().getHours() === 20),
+      filter(() => !this._initiated || new Date().getHours() % 2 === 0),
       tap(() => this._initiated = true),
       switchMap(() => this.weatherService.fetchOpenWeatherDaily()
-        .pipe(
-          retryWhen(this.retryStrategy()),
-          catchError(err => {
-            this.onError.next({ message: 'couldnt fetch the daily weather', color: 'red' });
-            return [];
-          })),
+        .pipe(retryWhen(this.retryStrategy()))
       ),
       share(),
     );
@@ -73,10 +69,6 @@ export class WeatherComponent {
         }
         )),
       retryWhen(this.retryStrategy()),
-      catchError(err => {
-        this.onError.next({ message: 'couldnt fetch the hourly weather', color: 'red' });
-        return [];
-      }),
     );
 
     this.weatherDailyInfo$ = openWeatherResponseDaily$

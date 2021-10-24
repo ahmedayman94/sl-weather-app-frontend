@@ -10,6 +10,7 @@ import { DateTimeComponent } from './components/date-time/date-time.component';
 import { BackgroundWallpaperComponent } from './components/background-wallpaper/background-wallpaper.component';
 import { WeatherComponent } from './components/weather/weather.component';
 import { SlScheduleComponent } from './components/sl-schedule/sl-schedule.component';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SlScheduleComponent } from './components/sl-schedule/sl-schedule.compon
     DateTimeComponent,
     BackgroundWallpaperComponent,
     WeatherComponent,
-    SlScheduleComponent
+    SlScheduleComponent,
+    ErrorMessageComponent,
   ],
   imports: [
     BrowserModule,

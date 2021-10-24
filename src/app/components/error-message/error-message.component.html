@@ -1,0 +1,11 @@
+<ng-container *ngIf="errorSl">
+    <div class="container-error" [ngStyle]="{'color': errorSl.color}">
+        {{ errorSl.message }}
+    </div>
+</ng-container>
+
+<ng-container *ngIf="errorWeather">
+    <div class="container-error" [ngStyle]="{'color': errorWeather.color}">
+        {{ errorWeather.message }}
+    </div>
+</ng-container>

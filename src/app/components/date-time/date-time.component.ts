@@ -10,9 +10,9 @@ import { ClockService } from 'src/app/shared/services/clock.service';
 })
 export class DateTimeComponent implements OnInit {
 
-  public date$: Observable<string>;
+  date$: Observable<string>;
 
-  public time$: Observable<string>;
+  time$: Observable<string>;
 
   constructor(private clockService: ClockService) { }
 

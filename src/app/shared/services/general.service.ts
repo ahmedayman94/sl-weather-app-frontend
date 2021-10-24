@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class GeneralService {
-    public wallpaperImages = [
+    wallpaperImages = [
         "https://images.unsplash.com/photo-1508189860359-777d945909ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80",
         "https://images2.alphacoders.com/734/734513.jpg",
         "https://images.alphacoders.com/109/1094713.jpg",

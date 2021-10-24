@@ -1,16 +1,8 @@
 <app-background-wallpaper></app-background-wallpaper>
 
 <div class="container">
-    <ng-container *ngIf="errorSl$ | async as errorSl">
-        <div class="container-error" [ngStyle]="{'color': errorSl.color}">
-            {{ errorSl.message }}
-        </div>
-    </ng-container>
-    <ng-container *ngIf="errorWeather$ | async as errorWeather">
-        <div class="container-error" [ngStyle]="{'color': errorWeather.color}">
-            {{ errorWeather.message }}
-        </div>
-    </ng-container>
+
+    <app-error-message [errorSl]="errorSl$  | async" [errorWeather]="errorWeather$ | async"></app-error-message>
 
     <div class="container-header">
         <app-date-time></app-date-time>

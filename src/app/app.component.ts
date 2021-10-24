@@ -8,22 +8,21 @@ import { ErrorModel } from './shared/models/error.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  private readonly _errorSlSubject$ = new BehaviorSubject<ErrorModel>({ message: null, color: null });
-  public errorSl$ = this._errorSlSubject$.asObservable();
+  private _errorSlSubject = new BehaviorSubject<ErrorModel>({ message: null, color: null });
 
-  private _errorWeatherSubject$ = new BehaviorSubject<ErrorModel>(null);
-  public errorWeather$ = this._errorWeatherSubject$.asObservable();
+  private _errorWeatherSubject = new BehaviorSubject<ErrorModel>(null);
+
+  errorSl$ = this._errorSlSubject.asObservable();
+
+  errorWeather$ = this._errorWeatherSubject.asObservable();
 
   constructor() { }
 
-  ngOnInit() {
+  onWeatherError(err: ErrorModel): void {
+    this._errorWeatherSubject.next(err);
   }
 
-  public onWeatherError(err: ErrorModel): void {
-    this._errorWeatherSubject$.next(err);
-  }
-
-  public onSlError(err: ErrorModel): void {
-    this._errorSlSubject$.next(err);
+  onSlError(err: ErrorModel): void {
+    this._errorSlSubject.next(err);
   }
 }
