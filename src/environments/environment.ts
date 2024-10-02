@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  localSLApiUrl: "",
+  localSLApiUrl: "http://localhost:5001/sl-weather/api/sl",
   localWeatherApiUrl: "/v2.0/forecast/hourly",
   localClimacellHourlyApiUrl: "./assets/weather-climacell-mockdata.json",
   localClimacellDailyApiUrl: "./assets/weather-climacell-mock-daily.json",

@@ -65,7 +65,7 @@ export class WeatherService {
 
         const queryParams = {
             ...this.queryParams,
-            exclude: 'minutes,hourly',
+            exclude: 'minutely,hourly',
         };
 
         return this.httpClient.get<OpenWeatherOneCallApi>(url, { params: queryParams }).pipe(

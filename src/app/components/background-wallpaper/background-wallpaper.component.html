@@ -1,5 +1,5 @@
 <ng-container *ngIf="urlTop$ | async as urlTop">
-    <div class="background top" [ngStyle]="{'background-image': urlTop}" [ngClass]="{  'hide' : showFirst}">
+    <div class="background top" [ngStyle]="{'background-image': urlTop}" [ngClass]="{ 'hide' : showFirst}">
     </div>
 </ng-container>
 <ng-container *ngIf="urlBottom$ | async as urlBottom">

@@ -7,11 +7,6 @@ import { TransportationTimes } from 'src/app/shared/models/transportation-times.
 import { ClockService } from 'src/app/shared/services/clock.service';
 import { SLService } from 'src/app/shared/services/sl.service';
 
-enum Stations {
-  TESSIN_PARKEN = 1131,
-  GARDET_TUNNEL_BANA = 9221
-};
-
 @Component({
   selector: 'app-sl-schedule',
   templateUrl: './sl-schedule.component.html',
@@ -33,7 +28,7 @@ export class SlScheduleComponent implements OnInit {
 
     this.transportationTimes$ = timer(0, 2 * 60 * 1000).pipe(
       // filter(x => x == null || x % 2 === 0),
-      switchMap(() => forkJoin([this.slService.fetchNextTransportationTime(Stations.TESSIN_PARKEN), this.slService.fetchNextTransportationTime(Stations.GARDET_TUNNEL_BANA)])),
+      switchMap(() => forkJoin([this.slService.fetchNextTransportationTime('bus'), this.slService.fetchNextTransportationTime('metro')])),
       tap(() => {
         // Reset error counter
         this._errorSlObj = { message: null, color: null, counter: 0 };
@@ -42,12 +37,12 @@ export class SlScheduleComponent implements OnInit {
       map(([busRes, metroRes]) =>
       ({
         bus: {
-          boardTime: this.slService.getStrListOfNextArrivals(busRes.ResponseData.Buses, 2),
-          latestUpdate: this.clockService.getTimeFormatFromDate(new Date(busRes.ResponseData.LatestUpdate)),
+          boardTime: this.slService.getStrListOfNextArrivals(busRes.departures),
+          latestUpdate: this.clockService.getTimeFormatFromDate(new Date()),
         },
         metro: {
-          boardTime: this.slService.getStrListOfNextArrivals(metroRes.ResponseData.Metros, 2),
-          latestUpdate: this.clockService.getTimeFormatFromDate(new Date(metroRes.ResponseData.LatestUpdate)),
+          boardTime: this.slService.getStrListOfNextArrivals(metroRes.departures),
+          latestUpdate: this.clockService.getTimeFormatFromDate(new Date()),
         }
       }),
       ),
